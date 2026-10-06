@@ -1,5 +1,23 @@
 # Quy trình làm việc
 
+## Ai làm gì
+
+| Thành viên | Track | Code | Tài liệu |
+|---|---|---|---|
+| Quỳnh Anh | Reliability signals | `frecon/signals/`, `scripts/export_signals.py`, `tests/test_signals.py` | `docs/research/QuynhAnh_signal_research.md`, `docs/notes/QuynhAnh_notes.md` |
+| Trường Thịnh | Geometric failure & intervention | `frecon/benchmark/`, `scripts/make_labels.py`, `tests/test_benchmark_labels.py` | `docs/research/TruongThinh_geometric_failure_research.md`, `docs/analysis/phase0_analysis.md`, `docs/notes/TruongThinh_notes.md` |
+| Tuấn Khải | D1 evaluation & infrastructure | `frecon/eval/`, `scripts/run_d1.py`, `tests/test_d1_metrics.py`, `configs/d1.yaml` | `docs/research/TuanKhai_evaluation.md`, `docs/notes/TuanKhai_notes.md` |
+| Minh Huy | Lead, lõi, Phase 0, review | `frecon/` (lõi), `scripts/phase0*`, `scripts/prepare_d1_run.py` | — |
+
+Phân công chi tiết: `docs/tasks/assignment.md`. Tìm việc của mình: `grep -rn "TODO(QuynhAnh)" .`
+(hoặc `TruongThinh`, `TuanKhai`). Định dạng file giữa các track: `docs/data_format.md`.
+
+Dữ liệu dùng chung (không có trên git): xin Huy `runs/phase0/seed_*/base.pt` + `runs/d1/`, hoặc tự tạo:
+
+```bash
+python scripts/prepare_d1_run.py --phase0_dir runs/phase0 --seeds 0 1 2 --scene synthetic --condition v8_az360
+```
+
 ## Git
 
 - **Không commit trực tiếp vào `main`.** Mỗi người làm trên branch riêng, merge qua Pull Request,
