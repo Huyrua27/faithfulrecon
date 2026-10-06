@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Experiment outputs: checkpoints, renders, per-Gaussian files (large, reproducible)
+runs/
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+*.ply
+
+# Datasets (see data/README.md)
+data/*
+!data/README.md
+
+# Results: commit only small summaries (csv, md, png). Per-Gaussian CSVs stay in runs/.
+results/**/signal_results*.csv
+results/**/*.npz
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

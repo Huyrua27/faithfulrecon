@@ -1,0 +1,11 @@
+torch>=2.1
+numpy
+pyyaml
+pillow
+matplotlib
+scipy          # D1: spearman
+scikit-learn   # D1: reference implementations in tests
+pytest
+# optional:
+# lpips        # LPIPS metric (downloads AlexNet weights on first use)
+# gsplat       # fast CUDA rasterizer backend (renderer: gsplat)

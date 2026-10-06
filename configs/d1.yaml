@@ -1,0 +1,9 @@
+# D1 evaluation config (Tuấn Khải). Read by scripts/run_d1.py (TODO).
+runs_root: runs/d1
+scene: synthetic
+condition: v8_az360
+signals: [opacity, gradmag, visibility, gradient_inconsistency]   # missing signals are skipped with a warning
+labels: [f_i, m_i]           # m_i skipped when meta.m_i_available is false
+k_fractions: [0.01, 0.05, 0.10]
+n_random: 100                # matched random draws per (seed, signal, label)
+out_dir: results/d1/synthetic/v8_az360

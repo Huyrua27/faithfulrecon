@@ -1,0 +1,45 @@
+# Phase 0 — D2 proof of concept (see README "Phase 0").
+# 1 scene, 1 sparse-view setting, removal only, K = 5%, 3 seeds.
+out_dir: runs/phase0
+device: cuda
+renderer: torch          # "gsplat" if you have a matching gsplat build (faster; see README)
+seeds: [0, 1, 2]
+
+scene:
+  type: synthetic        # or "blender" with `root: path/to/nerf_synthetic/lego`
+  resolution: 160
+  fov_deg: 30
+  cam_radius: 4.0
+  n_gt_gaussians: 40000
+  n_ref_points: 60000
+  n_train_views: 8       # the sparse-view setting
+  train_azim_range: [0, 360]
+  train_elev_range: [10, 50]
+  n_test_views: 16
+
+init:
+  n_points: 10000        # random init in a box, as 3DGS does for NeRF-Synthetic
+  half_extent: 1.0
+
+train:
+  iterations: 5000
+  densify_from: 300
+  densify_until: 3000
+  densify_every: 100
+  opacity_reset_every: 2000
+  max_gaussians: 120000
+  log_every: 500
+
+intervention:
+  signals: [opacity, gradmag, visibility]   # evaluated signals; "random" is the matched control
+  frac: 0.05             # K
+  n_random: 2            # random selections per seed (the control is their mean)
+  reopt_steps: 1000      # re-optimization after removal (densification off, final LR)
+  region_alpha_thresh: 0.5
+  neighborhood_radius: 0.05   # world units; used for 3D locality and local Chamfer
+
+labels:
+  tau: 0.03              # floater: center farther than tau from the reference surface
+
+analysis:
+  snr_min: 2.0           # effect / noise-floor ratio required to call a response measurable
