@@ -34,11 +34,24 @@ def spearman(score: np.ndarray, error: np.ndarray) -> float:
 
 
 def precision_at_k(score: np.ndarray, label: np.ndarray, k_frac: float) -> float:
-    raise NotImplementedError("TODO(TuanKhai)")
+    n_pos = int(label.sum())
+    if n_pos == 0 or n_pos == len(label):
+        return float("nan")
+    k = max(1, round(k_frac * len(score)))
+    id = np.argsort(score)[-k:]
+    sum_f_i = label[id].sum()
+    return float(sum_f_i) / float(k)
 
 
 def enrichment_at_k(score: np.ndarray, label: np.ndarray, k_frac: float) -> float:
-    raise NotImplementedError("TODO(TuanKhai)")
+    n_pos = int(label.sum())
+    if n_pos == 0 or n_pos == len(label):
+        return float("nan")
+
+    precision_k = precision_at_k(score, label, k_frac)
+    f_i_true = label.sum() / len(score)
+    enrichment_k = precision_k / f_i_true
+    return enrichment_k
 
 
 def all_metrics(score: np.ndarray, label: np.ndarray, error: np.ndarray | None = None) -> dict:

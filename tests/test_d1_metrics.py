@@ -3,6 +3,8 @@
 TODO(TuanKhai): remove the skip marks as metrics get implemented.
 """
 import pytest
+import numpy as np
+from frecon.eval.d1_metrics import precision_at_k, enrichment_at_k
 
 
 @pytest.mark.skip(reason="TODO(TuanKhai)")
@@ -13,16 +15,25 @@ def test_auroc_perfect_and_inverted():
 @pytest.mark.skip(reason="TODO(TuanKhai)")
 def test_against_sklearn_scipy():
     """Random data: auroc/auprc match sklearn, spearman matches scipy (atol 1e-6)."""
-
-
-@pytest.mark.skip(reason="TODO(TuanKhai)")
 def test_precision_and_enrichment_at_k():
-    """Hand-computed case: N=100, 10 positives, top-5% contains 3 -> precision 0.6, enrichment 6.0."""
+    label = np.array([True, False, True, False, False, False], dtype=bool)
+    score_a = np.array([0.2, 0.9, 0.01, 0.99, 0.55, 1.0])
+    score_b = np.array([1.2, 0.9, 0.01, 0.99, 0.55, 1.0])
+
+    assert precision_at_k(score_a, label, 0.25) == 0.0
+    assert enrichment_at_k(score_a, label, 0.25) == 0.0
+    assert precision_at_k(score_b, label, 0.25) == 0.5
+    assert enrichment_at_k(score_b, label, 0.25) == 1.5
 
 
-@pytest.mark.skip(reason="TODO(TuanKhai)")
 def test_degenerate_labels_return_nan():
-    """All-False or all-True labels -> NaN, no exception."""
+    score = np.array([0.9, 0.2, 0.5, 0.1])
+    for label in (
+        np.zeros(4, dtype=bool),
+        np.ones(4, dtype=bool),
+    ):
+        assert np.isnan(precision_at_k(score, label, 0.5))
+        assert np.isnan(enrichment_at_k(score, label, 0.5))
 
 
 @pytest.mark.skip(reason="TODO(TuanKhai)")
