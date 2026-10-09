@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import torch
 
-from . import gradient_inconsistency, gradmag, opacity, visibility
+from . import fisher, gradient_inconsistency, gradmag, opacity, pup_sensitivity, s_geom, visibility
 from .common import SignalContext, top_fraction, view_statistics
 
 
@@ -20,7 +20,12 @@ REGISTRY = {
     "opacity": opacity.compute,
     "gradmag": gradmag.compute,
     "visibility": visibility.compute,
-    "gradient_inconsistency": gradient_inconsistency.compute,
+    "gradient_inconsistency": gradient_inconsistency.compute,   # Quỳnh Anh
+    "fisher": fisher.compute,                                    # Phát
+    "pup": pup_sensitivity.compute,                              # Phát
+    "curvature": s_geom.curvature,                               # Phát
+    "s_geom": s_geom.s_geom,                                     # Phát
+    "s_geom_ranksum": s_geom.s_geom_ranksum,                     # Phát
 }
 
 SIGNALS = ("random", "opacity", "gradmag", "visibility")  # Phase 0 set
