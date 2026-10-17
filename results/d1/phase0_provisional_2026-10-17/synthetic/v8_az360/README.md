@@ -1,6 +1,6 @@
 # Phase 0 provisional D1 evaluation — 17/10/2026
 
-These outputs were computed from the received Phase 0 export in `C:/Users/tuank/Downloads/data/`, for scene `synthetic`, condition `v8_az360`, seeds 0/1/2. They are not the handcrafted QA fixture outputs.
+These outputs were computed from the Phase 0 paired exports supplied by the project maintainer for D1 evaluation, for scene `synthetic`, condition `v8_az360`, seeds 0/1/2. They are not the handcrafted QA fixture outputs.
 
 Labels are **provisional**: f_i comes from Phase 0 floater_labels; m_i is unavailable and has no metric rows or figures. The four signals are random, opacity, gradmag and visibility. Matched random uses R=100 draws per seed/label. This is a pipeline check on received experiment data, not an official benchmark or a faithfulness conclusion.
 

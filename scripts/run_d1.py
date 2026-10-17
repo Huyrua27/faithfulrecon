@@ -26,6 +26,7 @@ import hashlib
 import logging
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -65,7 +66,7 @@ CSV_FIELDS = [
     "random_precision_at_5_mean",
 ]
 
-metrics = ["auroc", "auprc", "precision_at_5"]
+SUMMARY_METRICS = ("auroc", "auprc", "precision_at_5")
 
 
 def sha256_file(path: Path) -> str:
@@ -77,17 +78,79 @@ def sha256_file(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("--scene", required=True)
     ap.add_argument("--condition", required=True)
     ap.add_argument("--runs_root", default="runs/d1")
     ap.add_argument("--out_dir", default=None)
     ap.add_argument("--n_random", type=int, default=100)
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
     if args.n_random <= 0:
         ap.error("--n_random must be positive")
+    return args
 
+
+def write_metrics_csv(metric_rows: list[dict], csv_path: Path) -> None:
+    if not metric_rows:
+        raise ValueError("No metric rows generated")
+    for row in metric_rows:
+        if set(row) != set(CSV_FIELDS):
+            raise ValueError("Metric row does not match CSV schema")
+
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+
+        writer.writeheader()
+
+        writer.writerows(metric_rows)
+
+
+def log_aggregates(metric_rows: list[dict]) -> None:
+    groups = defaultdict(list)
+
+    for row in metric_rows:
+        key = (row["signal"], row["label"])
+        groups[key].append(row)
+
+    for (signal, label), rows in groups.items():
+        for metric in SUMMARY_METRICS:
+            values = np.array([row[metric] for row in rows], dtype=float)
+            valid_values = values[np.isfinite(values)]
+            n_valid = len(valid_values)
+
+            if n_valid == 0:
+                logging.warning(
+                    "Aggregate undefined: signal=%s label=%s metric=%s n_valid=0/%d",
+                    signal, label, metric, len(values))
+                continue
+
+            valid_seeds = [row["seed"] for row in rows if np.isfinite(row[metric])]
+            if n_valid < len(values):
+                excluded_seeds = [
+                    row["seed"] for row in rows if not np.isfinite(row[metric])
+                ]
+                logging.warning(
+                    "Aggregate excludes undefined seeds: signal=%s label=%s metric=%s "
+                    "excluded_seeds=%s",
+                    signal,
+                    label,
+                    metric,
+                    excluded_seeds,
+                )
+
+            mean = np.mean(valid_values)
+            std = np.std(valid_values)
+
+            logging.info(
+                "Aggregate: signal=%s label=%s metric=%s mean=%.4f std=%.4f "
+                "n_valid=%d/%d seeds=%s",
+                signal, label, metric, mean, std, n_valid, len(values), valid_seeds,
+            )
+
+
+def main() -> list[dict]:
+    args = parse_args()
     start_time = time.perf_counter()
 
     out_dir = (
@@ -128,7 +191,7 @@ def main():
         )
         raise ValueError("No valid runs found")
 
-    dirs = []
+    runs = []
     seen_runs = set()
 
     for run_dir in run_dirs:
@@ -151,19 +214,11 @@ def main():
         for warning in warnings:
             logging.warning("Validation warning: %s", warning)
 
-        dirs.append(
-            {
-                "run_dir": run_dir,
-                "run": run,
-                "warnings": warnings,
-            }
-        )
+        runs.append(run)
 
     metric_rows = []
-    runs = [item["run"] for item in dirs]
 
-    for item in dirs:
-        run = item["run"]
+    for run in runs:
         baseline_cache = {}
 
         for signal_name, score in run.scores.items():
@@ -198,9 +253,8 @@ def main():
                     "label": label_name,
                 }
                 random_fields = {
-                    "random_auroc_mean": baseline["auroc"][0],
-                    "random_auprc_mean": baseline["auprc"][0],
-                    "random_precision_at_5_mean": baseline["precision_at_5"][0],
+                    f"random_{metric}_mean": baseline[metric][0]
+                    for metric in SUMMARY_METRICS
                 }
                 combined = {**metadata, **result, **random_fields}
                 metric_rows.append(combined)
@@ -208,18 +262,7 @@ def main():
     signals = sorted({signal_name for run in runs for signal_name in run.scores})
 
     csv_path = out_dir / "metrics.csv"
-    if not metric_rows:
-        raise ValueError("No metric rows generated")
-    for row in metric_rows:
-        if set(row) != set(CSV_FIELDS):
-            raise ValueError("Metric row does not match CSV schema")
-
-    with open(csv_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
-
-        writer.writeheader()
-
-        writer.writerows(metric_rows)
+    write_metrics_csv(metric_rows, csv_path)
 
     fig_dir = out_dir / "figures"
     plot_roc(runs, signals, fig_dir / "roc.png")
@@ -237,47 +280,7 @@ def main():
         "Figures written: %s (root labels=f_i; m_i subdirectory if available)", fig_dir
     )
 
-    groups = {}
-
-    for row in metric_rows:
-        key = (row["signal"], row["label"])
-        groups.setdefault(key, [])
-        groups[key].append(row)
-
-    for (signal, label), rows in groups.items():
-        for metric in metrics:
-            values = np.array([row[metric] for row in rows], dtype=float)
-            valid_values = values[np.isfinite(values)]
-            n_valid = len(valid_values)
-
-            if n_valid == 0:
-                logging.warning(
-                    "Aggregate undefined: signal=%s label=%s metric=%s n_valid=0/%d",
-                    signal, label, metric, len(values))
-                continue
-
-            valid_seeds = [row["seed"] for row in rows if np.isfinite(row[metric])]
-            if n_valid < len(values):
-                excluded_seeds = [
-                    row["seed"] for row in rows if not np.isfinite(row[metric])
-                ]
-                logging.warning(
-                    "Aggregate excludes undefined seeds: signal=%s label=%s metric=%s "
-                    "excluded_seeds=%s",
-                    signal,
-                    label,
-                    metric,
-                    excluded_seeds,
-                )
-
-            mean = np.mean(valid_values)
-            std = np.std(valid_values)
-
-            logging.info(
-                "Aggregate: signal=%s label=%s metric=%s mean=%.4f std=%.4f "
-                "n_valid=%d/%d seeds=%s",
-                signal, label, metric, mean, std, n_valid, len(values), valid_seeds,
-            )
+    log_aggregates(metric_rows)
 
     elapsed = time.perf_counter() - start_time
 

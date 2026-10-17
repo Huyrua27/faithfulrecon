@@ -51,6 +51,18 @@ def test_average_precision_matches_sklearn_with_ties(tied_case):
     )
 
 
+@pytest.mark.parametrize("n,n_levels", [(2, 2), (17, 1), (101, 7), (1000, 12)])
+def test_average_precision_matches_sklearn_for_changed_tie_patterns(n, n_levels):
+    rng = np.random.default_rng(20261017)
+    score = rng.integers(0, n_levels, size=n).astype(float) - n_levels // 2
+    label = rng.random(n) < 0.2
+    label[0], label[-1] = True, False
+
+    assert metrics.auprc(score, label) == pytest.approx(
+        average_precision_score(label, score), abs=1e-12
+    )
+
+
 def test_spearman_matches_scipy(tied_case):
     score, _, error = tied_case
     assert metrics.spearman(score, error) == pytest.approx(

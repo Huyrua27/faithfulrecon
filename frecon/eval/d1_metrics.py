@@ -20,7 +20,7 @@ import numpy as np
 K_FRACTIONS = (0.01, 0.05, 0.10)
 
 
-def _validate_score_label(score: np.ndarray, label: np.ndarray):
+def _validate_score_label(score: np.ndarray, label: np.ndarray) -> None:
     if score.ndim != 1 or label.ndim != 1:
         raise ValueError("Inputs must be 1-D")
 
@@ -61,28 +61,23 @@ def auroc(score: np.ndarray, label: np.ndarray) -> float:
 
 def auprc(score: np.ndarray, label: np.ndarray) -> float:
     _validate_score_label(score, label)
-    order = np.argsort(score)[::-1]
-    sorted_score = score[order]
-    sorted_label = label[order]
     n_pos = np.count_nonzero(label)
     if n_pos == 0 or n_pos == len(label):
         return float("nan")
+
+    order = np.argsort(score)[::-1]
+    sorted_score = score[order]
+    sorted_label = label[order]
     tp_cum = np.cumsum(sorted_label)
-    fp_cum = np.cumsum(~sorted_label)
-    indices = []
-    for i in range(1, len(sorted_score)):
-        if sorted_score[i - 1] != sorted_score[i]:
-            indices.append(i - 1)
-    indices.append(len(sorted_score) - 1)
-    precision = tp_cum[indices] / (tp_cum[indices] + fp_cum[indices])
+
+    # Evaluate only at the end of each tied-score group.
+    indices = np.r_[
+        np.flatnonzero(sorted_score[:-1] != sorted_score[1:]), len(sorted_score) - 1
+    ]
+    precision = tp_cum[indices] / (indices + 1)
     recall = tp_cum[indices] / n_pos
-    delta_recall = []
-    prev = 0.0
-    for i in range(len(recall)):
-        delta_recall.append(recall[i] - prev)
-        prev = recall[i]
-    average_precision = float((delta_recall * precision).sum())
-    return average_precision
+    delta_recall = np.diff(np.r_[0.0, recall])
+    return float((delta_recall * precision).sum())
 
 
 def spearman(score: np.ndarray, error: np.ndarray) -> float:
@@ -138,29 +133,41 @@ def enrichment_at_k(score: np.ndarray, label: np.ndarray, k_frac: float) -> floa
     if n_pos == 0 or n_pos == len(label):
         return float("nan")
 
-    f_i_true = label.sum() / len(score)
-    enrichment_k = precision_k / f_i_true
-    return enrichment_k
+    prevalence = float(label.mean())
+    return float(precision_k / prevalence)
 
 
 def all_metrics(
     score: np.ndarray, label: np.ndarray, error: np.ndarray | None = None
-) -> dict:
+) -> dict[str, float]:
     """One row of metrics.csv (without scene/condition/seed/signal columns)."""
     _validate_score_label(score, label)
     spearman_score = spearman(score, error) if error is not None else float("nan")
 
+    metric_functions = {
+        "auroc": auroc,
+        "auprc": auprc,
+    }
+
+    classification_metrics = {
+        name: metric_fn(score, label)
+        for name, metric_fn in metric_functions.items()
+    }
+
     result = {
         "prevalence": float(label.mean()),
-        "auroc": auroc(score, label),
-        "auprc": auprc(score, label),
+        **classification_metrics,
         "spearman": spearman_score,
     }
 
+    prevalence = result["prevalence"]
+
     for k_frac in K_FRACTIONS:
         k_percent = round(k_frac * 100)
+        precision_k = precision_at_k(score, label, k_frac)
 
-        result[f"precision_at_{k_percent}"] = precision_at_k(score, label, k_frac)
-        result[f"enrichment_at_{k_percent}"] = enrichment_at_k(score, label, k_frac)
-
+        result[f"precision_at_{k_percent}"] = precision_k
+        result[f"enrichment_at_{k_percent}"] = (
+            precision_k / prevalence if 0 < prevalence < 1 else float("nan")
+        )
     return result

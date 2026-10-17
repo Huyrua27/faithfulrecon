@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from itertools import chain
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -36,8 +37,6 @@ def load_run(run_dir: str | Path) -> RunData:
     if not labels_path.is_file():
         raise FileNotFoundError(f"Missing file: {labels_path}")
 
-    scores = {}
-
     with np.load(scores_path, allow_pickle=True) as data:
         if "meta" not in data.files:
             raise ValueError(f"Missing meta in {scores_path}")
@@ -47,12 +46,12 @@ def load_run(run_dir: str | Path) -> RunData:
         if not isinstance(scores_meta, dict):
             raise ValueError("scores metadata must be a dictionary")
 
-        for feature in data.files:
-            if feature == "meta":
-                continue
-            scores[feature] = data[feature]
+        scores = {
+            feature: data[feature]
+            for feature in data.files
+            if feature != "meta"
+        }
 
-    labels = {}
     with np.load(labels_path, allow_pickle=True) as data:
         if "meta" not in data.files:
             raise ValueError(f"Missing meta in {labels_path}")
@@ -67,10 +66,11 @@ def load_run(run_dir: str | Path) -> RunData:
 
         xyz = data["xyz"]
 
-        for key in data.files:
-            if key not in ("distance", "m_i", "f_i"):
-                continue
-            labels[key] = data[key]
+        labels = {
+            key: data[key]
+            for key in data.files
+            if key in ("distance", "m_i", "f_i")
+        }
 
     scene = run_dir.parent.parent.name
     condition = run_dir.parent.name
@@ -164,13 +164,7 @@ def validate(run: RunData) -> list[str]:
     if not run.scores:
         raise ValueError("No score signals found")
 
-    for name, arr in run.scores.items():
-        if arr.shape != (N,):
-            raise ValueError(
-                f"Invalid shape for {name}: expected {(N,)}, got {arr.shape}"
-            )
-
-    for name, arr in run.labels.items():
+    for name, arr in chain(run.scores.items(), run.labels.items()):
         if arr.shape != (N,):
             raise ValueError(
                 f"Invalid shape for {name}: expected {(N,)}, got {arr.shape}"
@@ -267,7 +261,7 @@ def validate(run: RunData) -> list[str]:
             hasher = hashlib.sha256()
 
             with checkpoint_file.open("rb") as f:
-                while chunk := f.read(1024 * 1024):
+                for chunk in iter(lambda: f.read(1024 * 1024), b""):
                     hasher.update(chunk)
 
             actual_sha256 = hasher.hexdigest()
@@ -296,17 +290,13 @@ def discover_runs(
     root = Path(root)
 
     candidates = root.glob("*/*/seed_*")
-    runs = []
-    for path in candidates:
-        if not path.is_dir():
-            continue
-        if scene is not None and path.parent.parent.name != scene:
-            continue
-        if condition is not None and path.parent.name != condition:
-            continue
-        sd = path.name
-        if not (sd.startswith("seed_") and sd[5:].isdigit()):
-            continue
-        runs.append(path)
 
-    return sorted(runs)
+    return sorted(
+        path
+        for path in candidates
+        if path.is_dir()
+        and (scene is None or path.parent.parent.name == scene)
+        and (condition is None or path.parent.name == condition)
+        and path.name.startswith("seed_")
+        and path.name[5:].isdigit()
+    )

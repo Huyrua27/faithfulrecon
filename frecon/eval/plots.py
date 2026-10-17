@@ -17,6 +17,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.metrics import precision_recall_curve, roc_curve
 
+from frecon.eval.d1_metrics import K_FRACTIONS
+
 SIGNAL_COLORS = {
     "opacity": "#2a78d6",
     "gradmag": "#eb6834",
@@ -70,10 +72,10 @@ def plot_roc(runs, signals, out_path, *, label_name="f_i"):
     n_curves = 0
 
     for signal in signals:
-        curves = []
-        for run in _defined_runs(runs, signal, label_name):
-            fpr, tpr, _ = roc_curve(run.labels[label_name], run.scores[signal])
-            curves.append((fpr, tpr))
+        curves = [
+            roc_curve(run.labels[label_name], run.scores[signal])[:2]
+            for run in _defined_runs(runs, signal, label_name)
+        ]
 
         if not curves:
             continue
@@ -200,7 +202,7 @@ def plot_enrichment(metrics_df, out_path, *, label_name="f_i"):
     )
     records = [row for row in records if row["label"] == label_name]
     fig, ax = plt.subplots(figsize=(7, 5))
-    ks = [1, 5, 10]
+    ks = [round(fraction * 100) for fraction in K_FRACTIONS]
     n_curves = 0
 
     for signal in sorted({row["signal"] for row in records}):
@@ -219,7 +221,7 @@ def plot_enrichment(metrics_df, out_path, *, label_name="f_i"):
         means = np.divide(
             np.where(valid, values, 0).sum(axis=0),
             counts,
-            out=np.full(3, np.nan),
+            out=np.full(len(ks), np.nan),
             where=counts > 0,
         )
         n_label = (
@@ -245,7 +247,7 @@ def plot_enrichment(metrics_df, out_path, *, label_name="f_i"):
         ylabel="Enrichment@K",
         title=f"{'Failure' if label_name == 'f_i' else 'Condition'} enrichment — {label_name} (mean across seeds)",
         xticks=ks,
-        xlim=(0.5, 10.5),
+        xlim=(min(ks) - 0.5, max(ks) + 0.5),
     )
     ax.set_ylim(bottom=0)
     ax.legend()

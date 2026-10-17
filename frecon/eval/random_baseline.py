@@ -13,9 +13,23 @@ TODO(TuanKhai):
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 
 from frecon.eval.d1_metrics import all_metrics
+
+q05 = partial(np.quantile, q=0.05)
+q95 = partial(np.quantile, q=0.95)
+
+
+def _summarize(values: np.ndarray) -> tuple[float, float, float, float]:
+    return (
+        float(values.mean()),
+        float(values.std()),
+        float(q05(values)),
+        float(q95(values)),
+    )
 
 
 def random_scores(n: int, seed: int, draw: int) -> np.ndarray:
@@ -27,22 +41,24 @@ def random_scores(n: int, seed: int, draw: int) -> np.ndarray:
 
 def random_reference(
     label: np.ndarray, error: np.ndarray | None, R: int = 100, seed: int = 0
-) -> dict:
+) -> dict[str, tuple[float, float, float, float]]:
     if R <= 0:
         raise ValueError("R must be positive")
 
-    results = []
-    for draw in range(R):
-        random_score = random_scores(n=len(label), seed=seed, draw=draw)
-        results.append(all_metrics(random_score, label, error))
-
-    summary = {}
-    for metric_name in results[0].keys():
-        values = np.array([result[metric_name] for result in results], dtype=float)
-        summary[metric_name] = (
-            float(values.mean()),
-            float(values.std()),
-            float(np.quantile(values, 0.05)),
-            float(np.quantile(values, 0.95)),
+    results = [
+        all_metrics(
+            random_scores(n=len(label), seed=seed, draw=draw),
+            label,
+            error,
         )
+        for draw in range(R)
+    ]
+
+    summary = {
+        metric_name: _summarize(
+            np.array([result[metric_name] for result in results], dtype=float)
+        )
+        for metric_name in results[0]
+    }
+
     return summary
