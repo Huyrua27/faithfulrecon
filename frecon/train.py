@@ -106,8 +106,9 @@ class Trainer:
         return float(loss)
 
     def fit(self, cams, iterations: int | None = None, densify: bool = True, seed: int = 0,
-            means_lr: float | None = None, log=print):
-        """Cycle through `cams` in a seeded random order (as in 3DGS)."""
+            means_lr: float | None = None, log=print, callback=None):
+        """Cycle through `cams` in a seeded random order (as in 3DGS).
+        `callback(it)` is called after each step with the number of steps done (1-based)."""
         rng = random.Random(seed)
         iterations = self.cfg.iterations if iterations is None else iterations
         stack, losses = [], []
@@ -117,6 +118,8 @@ class Trainer:
                 rng.shuffle(stack)
             cam = cams[stack.pop()]
             losses.append(self.train_step(cam, densify=densify, means_lr=means_lr))
+            if callback is not None:
+                callback(it + 1)
             if log and self.cfg.log_every and (it + 1) % self.cfg.log_every == 0:
                 log(f"  iter {it + 1:5d}/{iterations}  loss {sum(losses[-100:]) / len(losses[-100:]):.4f}"
                     f"  #G {self.model.n}")

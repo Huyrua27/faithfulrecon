@@ -1,0 +1,43 @@
+# NeRF-Synthetic lego, 8 training views, white background.
+# Reference geometry is NOT part of the dataset: set ref_points_path once a mesh is available
+# (scripts/blender_export_mesh.py + scripts/make_reference_points.py). Without it, D2 still measures
+# locality and held-out image change, but not local accuracy / completeness, and no f_i labels.
+out_dir: runs/blender_lego_v8
+device: cuda
+renderer: torch
+seeds: [0, 1, 2, 3, 4, 5]
+
+scene:
+  type: blender
+  root: data/nerf_synthetic/lego
+  downscale: 4            # 800x800 -> 200x200
+  n_train_views: 8
+  n_test_views: 16
+  ref_points_path: null   # e.g. data/reference/lego_points.npy
+
+init:
+  n_points: 10000
+  half_extent: 1.5        # NeRF-Synthetic objects lie within ~[-1.5, 1.5]^3
+
+train:
+  iterations: 7000
+  densify_from: 300
+  densify_until: 3500
+  densify_every: 100
+  opacity_reset_every: 3000
+  max_gaussians: 300000
+  log_every: 500
+
+intervention:
+  signals: [opacity, gradmag, visibility]
+  frac: 0.05
+  n_random: 2
+  reopt_steps: 1000
+  region_alpha_thresh: 0.5
+  neighborhood_radius: 0.05
+
+labels:
+  tau: 0.03
+
+analysis:
+  snr_min: 2.0

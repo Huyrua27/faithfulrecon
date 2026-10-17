@@ -104,6 +104,9 @@ def run_seed(cfg, seed, scene, rasterize, bg, dev):
     sig = cached(sdir / "signals.pt", lambda: {k: v.cpu() for k, v in compute_signals(
         base, train_cams, rasterize, bg, names=("random",) + tuple(icfg["signals"]), seed=seed).items()})
     sig = {k: v.to(dev) for k, v in sig.items()}
+    if cfg.get("base_only"):
+        log(f"seed {seed}: base model and signals ready (--base_only)")
+        return None
     selections = {}
     for name in icfg["signals"]:
         selections[name] = top_fraction(sig[name], icfg["frac"])
@@ -205,6 +208,8 @@ def main():
     ap.add_argument("--seeds", type=int, nargs="*", default=None)
     ap.add_argument("--quick", action="store_true", help="tiny smoke-test settings (minutes, not hours)")
     ap.add_argument("--out_dir", default=None)
+    ap.add_argument("--base_only", action="store_true",
+                    help="train base models and compute signals only (inputs for scripts/d2_v2.py)")
     args = ap.parse_args()
 
     cfg = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
@@ -217,6 +222,7 @@ def main():
     out = Path(cfg["out_dir"])
     out.mkdir(parents=True, exist_ok=True)
     (out / "config.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
+    cfg["base_only"] = args.base_only  # run mode, deliberately not saved in config.yaml
 
     dev = cfg.get("device", "cuda") if torch.cuda.is_available() else "cpu"
     rasterize = get_rasterizer(cfg.get("renderer", "torch"))

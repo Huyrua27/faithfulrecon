@@ -1,0 +1,24 @@
+# D2 protocol v2.1 on condition v8_az360 (8 training views over 360°), scripts/d2_v2.py.
+# Changes vs Phase 0.5 (configs/phase0_5.yaml):
+#   - minimum-size region mask "weight_min" (SNR / image LR comparable across selections)
+#   - 5 matched random selections per seed (was 2)
+#   - seeds 0-4 (was 0-2); seeds 3-4 need base models: phase0.py --base_only --seeds 3 4
+# Runs already done in Phase 0.5 are reused (same checkpoint, selection, seed, snapshots).
+reuse_from: runs/phase0          # base.pt + signals.pt
+reuse_runs_from: runs/phase0_5   # cached re-optimization runs
+out_dir: runs/d2v21_v8_az360
+seeds: [0, 1, 2, 3, 4]
+
+intervention:
+  signals: [opacity, gradmag, visibility]
+  frac: 0.05
+  n_random: 5
+  snapshots: [0, 200, 1000]
+  region_alpha_thresh: 0.5
+  region_weight_thresh: 0.2
+  region_min_frac: 0.01      # region grown to >= 1% of all held-out pixels
+  neighborhood_radius: 0.05
+
+analysis:
+  snr_min: 2.0
+  primary_step: 1000
