@@ -2,10 +2,12 @@
 direction, decision rule v2, report.md + figure.
 
 Decision rule v2 (stated before looking at the Phase 0.5 results):
-  measurable  : image SNR_in (weight mask) >= snr_min in every seed at the primary step
+  measurable  : image SNR_in (region mask) >= snr_min in every seed at the primary step
+  region mask : "weight_min" if present (weight mask grown to a minimum size, protocol v2.1),
+                else "weight" (protocol v2)
   per gain    : 'expected' = same sign in every seed, |mean| >= 2*SE, sign as the signal implies (+)
                 'opposite' = same, but negative ; otherwise 'inconsistent'
-  gains used  : locality  Gain_LR (image, weight mask), Gain_LR (3D displacement)
+  gains used  : locality  Gain_LR (image, region mask), Gain_LR (3D displacement)
                 direction Gain_Dir (held-out 1-SSIM), Gain_Dir (local accuracy), Gain_Dir (local completeness)
   GO for D2   : at least one measurable signal with an 'expected' or 'opposite' gain
   per signal  : supported      = expected locality AND >= 1 expected direction AND no opposite direction
@@ -28,7 +30,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 GAINS = [  # key, label, group
-    ("lr_img", "Gain_LR image (weight mask)", "locality"),
+    ("lr_img", "Gain_LR image (region mask)", "locality"),
     ("lr_param", "Gain_LR 3D displacement", "locality"),
     ("dir_dssim", "Gain_Dir held-out 1−SSIM", "direction"),
     ("dir_acc", "Gain_Dir local accuracy", "direction"),
@@ -41,11 +43,33 @@ def _nanmean(v):
     return float(np.mean(v)) if v else float("nan")
 
 
+MASK = "weight"  # set in analyze(): "weight_min" when available
+
+
+
+def describe(cfg) -> tuple[str, str]:
+    """(title, condition note) built from the config instead of hard-coded Phase 0.5 text."""
+    ic, sc = cfg["intervention"], cfg["scene"]
+    version = "v2.1" if ic.get("region_min_frac") else "v2"
+    kind = sc.get("type", "synthetic")
+    if kind == "synthetic":
+        az = sc.get("train_azim_range", [0, 360])
+        cond = f"synthetic v{sc.get('n_train_views')}_az{int(az[1] - az[0])}"
+        views = f"{sc.get('n_train_views')} training views over {int(az[1] - az[0])}°"
+    else:
+        name = Path(sc.get("root", kind)).name
+        cond = f"{kind} {name} v{sc.get('n_train_views')}"
+        views = f"{sc.get('n_train_views')} training views (farthest-point subset)"
+    title = f"D2 protocol {version} — {cond}"
+    note = f"{views} · base models and signals from {cfg.get('reuse_from', '?')}"
+    return title, note
+
+
 def raw(sel: dict, t: str) -> dict:
     s = sel["by_step"][t]
-    out = {"lr_img": s["image"]["weight"]["LR"], "lr_img_fp": s["image"]["footprint"]["LR"],
+    out = {"lr_img": s["image"][MASK]["LR"], "lr_img_fp": s["image"]["footprint"]["LR"],
            "lr_param": s["param"]["LR"], "dir_dssim": -s["heldout"]["dssim"],
-           "snr": s["image"]["weight"].get("snr_in", float("nan")),
+           "snr": s["image"][MASK].get("snr_in", float("nan")),
            "snr_fp": s["image"]["footprint"].get("snr_in", float("nan"))}
     if "geometry" in s:
         out["dir_acc"] = -s["geometry"]["d_acc"]
@@ -84,6 +108,9 @@ def analyze(run_dir: Path):
     ms = [json.loads(p.read_text()) for p in sorted(run_dir.glob("seed_*/metrics.json"))]
     if not ms:
         raise SystemExit(f"no metrics under {run_dir}")
+    global MASK
+    first = next(iter(ms[0]["selections"].values()))
+    MASK = "weight_min" if "weight_min" in first["by_step"][str(ms[0]["steps"][0])]["image"] else "weight"
     steps = [str(t) for t in ms[0]["steps"]]
     prim = str(cfg.get("analysis", {}).get("primary_step", steps[-1]))
     if prim not in steps:
@@ -122,16 +149,17 @@ def report(run_dir: Path):
     cfg, ms, steps, prim, snr_min, signals, G, rnd_snr, meas, cls = analyze(run_dir)
     go, verdict = verdicts(signals, prim, meas, cls)
     ic = cfg["intervention"]
-    L = ["# Phase 0.5 — D2 protocol v2", "",
+    title, note = describe(cfg)
+    L = [f"# {title}", "", f"- {note}",
          f"- Seeds: {[m['seed'] for m in ms]} · K = {ic['frac']:.0%} · removal · snapshots {steps} steps · "
-         f"{ic['n_random']} random selections per seed · checkpoints and selections identical to Phase 0",
+         f"{ic['n_random']} random selections per seed",
          f"- Weight mask: selected Gaussians carry ≥ {ic['region_weight_thresh']:.0%} of the pixel's blending weight "
          f"(footprint mask of Phase 0 reported for comparison)",
          "- Values: mean ± std over seeds; gains = signal − mean of random selections in the same seed.",
          "- Class: **E** = consistent, expected sign (+) · **O** = consistent, opposite sign · · = inconsistent", ""]
 
     L += ["## Region size and image locality", "", "| signal | region (weight) | region (footprint) | "
-          f"LR_img weight @ {prim} (random) | LR_img footprint @ {prim} (random) |", "|---|---|---|---|---|"]
+          f"LR_img {MASK} @ {prim} (random) | LR_img footprint @ {prim} (random) |", "|---|---|---|---|---|"]
     for s in signals:
         rf = [m["selections"][s]["region_frac"] for m in ms]
         rr = [_nanmean([v["region_frac"]["weight"] for v in m["selections"].values() if v["kind"] == "random"]) for m in ms]
@@ -141,7 +169,7 @@ def report(run_dir: Path):
                  f"({_nanmean([x['lr_img_random'] for x in g]):.3f}) | {_nanmean([x['lr_fp_abs'] for x in g]):.3f} "
                  f"({_nanmean([x['lr_fp_random'] for x in g]):.3f}) |")
 
-    L += ["", "## Measurability (image SNR_in, weight mask)", "",
+    L += ["", f"## Measurability (image SNR_in, {MASK} mask)", "",
           "| signal | " + " | ".join(f"step {t}" for t in steps if t != "0") + " | measurable |",
           "|---|" + "---|" * (len(steps) - (1 if "0" in steps else 0)) + "---|"]
     for s in signals:
@@ -181,13 +209,14 @@ def figure(run_dir, cfg, steps, prim, signals, G, rnd_snr, meas, cls, go, verdic
     from make_phase0_figure import COLORS, INK, INK2, RANDOM, SURFACE, THRESH, style  # noqa: F401
 
     x = list(range(len(steps)))  # categorical: steps are unevenly spaced
-    panels = [("snr", "A  Response vs noise floor\n    SNR_in (weight mask)", 1.0)] + \
+    panels = [("snr", f"A  Response vs noise floor\n    SNR_in ({MASK} mask)", 1.0)] + \
              [(k, f"{chr(66 + i)}  {lbl}", 1e3 if g == "direction" else 1.0) for i, (k, lbl, g) in enumerate(GAINS)]
     fig, axes = plt.subplots(2, 3, figsize=(13, 7.6))
     fig.subplots_adjust(left=0.06, right=0.985, top=0.78, bottom=0.21, hspace=0.62, wspace=0.28)
     ic = cfg["intervention"]
-    fig.text(0.05, 0.965, "FaithfulRecon — Phase 0.5: D2 protocol v2", fontsize=15, weight="bold", color=INK)
-    fig.text(0.05, 0.935, f"Same checkpoints and selections as Phase 0 · remove top-{ic['frac']:.0%} · response right after "
+    title, note = describe(cfg)
+    fig.text(0.05, 0.965, f"FaithfulRecon — {title}", fontsize=15, weight="bold", color=INK)
+    fig.text(0.05, 0.935, f"{note} · remove top-{ic['frac']:.0%} · response right after "
              f"removal and after {', '.join(steps[1:])} re-optimization steps · {len(G[signals[0]][steps[0]])} seeds\n"
              "Gain = signal − mean of size-matched random removals (same seed); > 0 = more local / better than random. "
              "Dashed = not measurable. E / O = consistent expected / opposite sign at that step.",
@@ -231,7 +260,7 @@ def figure(run_dir, cfg, steps, prim, signals, G, rnd_snr, meas, cls, go, verdic
             [f"• {s}: {verdict[s]}" for s in signals]
     fig.text(0.05, 0.03, "\n".join(lines), fontsize=9.5, color=INK, va="bottom", linespacing=1.6,
              bbox=dict(boxstyle="round,pad=0.6", facecolor="#f1f0ec", edgecolor="none"))
-    out = run_dir / "phase0_5_figure.png"
+    out = run_dir / "d2_figure.png"
     fig.savefig(out, dpi=200)
     plt.close(fig)
     print(f"figure: {out}")

@@ -40,12 +40,28 @@ from phase0 import deep_update, log  # noqa: E402
 
 
 @torch.no_grad()
-def weight_masks(model, selected, cams, rasterize, thresh):
-    """Pixels where the selected Gaussians carry >= thresh of the blending weight in `model`."""
+def weight_maps(model, selected, cams, rasterize):
+    """(V,H,W) share of each pixel's blending weight carried by the selected Gaussians in `model`
+    (real, occlusion-aware weights of the base render)."""
     feats = selected.float()[:, None]
     zero = torch.zeros(1, device=feats.device)
-    return torch.stack([model.render(rasterize, c, zero, features=feats)["image"][..., 0] >= thresh
-                        for c in cams])
+    return torch.stack([model.render(rasterize, c, zero, features=feats)["image"][..., 0] for c in cams])
+
+
+def min_size_mask(wmap: torch.Tensor, thresh: float, min_frac: float) -> torch.Tensor:
+    """Weight mask (wmap >= thresh), grown to at least `min_frac` of all pixels by adding the
+    pixels with the next-highest selected weight (only pixels with wmap > 0). Keeps SNR and LR
+    comparable across selections whose weight masks differ by orders of magnitude in size."""
+    mask = wmap >= thresh
+    need = int(round(min_frac * wmap.numel()))
+    if int(mask.sum()) >= need:
+        return mask
+    flat = wmap.flatten()
+    k = min(need, int((flat > 0).sum()))
+    out = torch.zeros_like(flat, dtype=torch.bool)
+    if k > 0:
+        out[torch.topk(flat, k).indices] = True
+    return out.view_as(wmap) | mask
 
 
 def snapshot(model, test_cams, rasterize, bg):
@@ -101,6 +117,12 @@ def run_seed(cfg, seed, scene, rasterize, bg, dev):
 
     def run(name, remove, rseed):
         path = sdir / f"run_{name}.pt"
+        prev = Path(cfg["reuse_runs_from"]) / f"seed_{seed}" / path.name if cfg.get("reuse_runs_from") else None
+        if not path.exists() and prev is not None and prev.exists():
+            # same checkpoint, same selection (deterministic), same re-optimization seed and snapshots
+            prev_steps = sorted(int(t) for t in torch.load(prev, weights_only=False).keys())
+            if prev_steps == steps_list:
+                shutil.copy2(prev, path)
         if path.exists():
             snaps = torch.load(path, weights_only=False)
         else:
@@ -125,8 +147,11 @@ def run_seed(cfg, seed, scene, rasterize, bg, dev):
     results = {"seed": seed, "n_gaussians": base.n, "steps": steps_list, "selections": {}}
     for name, sel in selections.items():
         keep = ~sel
+        wmap = weight_maps(base, sel, test_cams, rasterize)
         masks = {"footprint": region_masks(base, sel, test_cams, rasterize, bg, icfg["region_alpha_thresh"]),
-                 "weight": weight_masks(base, sel, test_cams, rasterize, icfg["region_weight_thresh"])}
+                 "weight": wmap >= icfg["region_weight_thresh"]}
+        if icfg.get("region_min_frac"):
+            masks["weight_min"] = min_size_mask(wmap, icfg["region_weight_thresh"], icfg["region_min_frac"])
         near = neighborhood(base_means[keep], base_means[sel], radius)
         centers = base_means[sel]
         rec = {"kind": "random" if name.startswith("random") else "signal", "n_selected": int(sel.sum()),

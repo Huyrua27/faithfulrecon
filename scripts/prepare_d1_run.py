@@ -76,6 +76,9 @@ def main():
         np.savez_compressed(out / "scores.npz", **scores,
                             meta=np.array(dict(meta, signal_params={"source": "phase0 signals.pt"}), dtype=object))
 
+        if ref_pts is None:
+            print(f"seed {seed}: no reference geometry for this scene -> scores only, no geometric_labels.npz")
+            continue
         with torch.no_grad():
             contrib = torch.zeros(n, device=dev)
             for c in test_cams:

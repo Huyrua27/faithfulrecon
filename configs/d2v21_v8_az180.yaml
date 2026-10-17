@@ -1,0 +1,19 @@
+# D2 protocol v2.1 on condition v8_az180 (8 training views over 180°), scripts/d2_v2.py.
+# Same protocol as configs/d2v21_v8_az360.yaml; base models from configs/phase0_v8_az180.yaml.
+reuse_from: runs/v8_az180        # base.pt + signals.pt
+out_dir: runs/d2v21_v8_az180
+seeds: [0, 1, 2]
+
+intervention:
+  signals: [opacity, gradmag, visibility]
+  frac: 0.05
+  n_random: 5
+  snapshots: [0, 200, 1000]
+  region_alpha_thresh: 0.5
+  region_weight_thresh: 0.2
+  region_min_frac: 0.01
+  neighborhood_radius: 0.05
+
+analysis:
+  snr_min: 2.0
+  primary_step: 1000
