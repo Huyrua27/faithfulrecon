@@ -40,8 +40,17 @@ The pytest basetemp path above was fresh when used. For a new sandbox run choose
 - Every checkpoint hash matches the supplied manifest and exported score metadata.
 - All implementation file hashes recorded by the exporter match the code used for the final run.
 - Cached exports verified exactly equal to the four supplied score arrays for every seed.
-- **45 recomputed PNGs** (five signals × three K × three seeds) and **36 cached PNGs** (four signals × three K × three seeds).
+- Full experiment output: **45 recomputed PNGs** (five signals × three K × three seeds) and **36 cached PNGs** (four signals × three K × three seeds), now stored under gitignored `runs/signals/figures/`.
+- PR packaging revision: only **8 seed-0 / Top-5% figures** remain in `results/signals/` (1527940 bytes total). All 81 are preserved in the local ZIP listed in README; Google Drive upload is pending.
 - Inspected representative recomputed GI Top5 and opacity Top1 PNGs for axes, title, bounds, selected count, color and clipping.
+
+## PR figure cleanup verification (2026-10-17)
+
+- Re-ran `scripts/reproduce_quynhanh.ps1` across seeds 0/1/2 after changing figure destinations. It generated all 81 figures in `runs/` and left exactly eight representative PNGs in `results/signals/`.
+- Re-ran pytest with `--basetemp runs/pytest_figure_cleanup_20261017_a`: **28 passed, 19 skipped**, 15.78 seconds.
+- Verified all 81 regenerated PNG sizes and SHA256 against `figure_manifest.csv`, the eight retained copies, and the complete ZIP contents/checksum. `.gitignore` permits exactly the selected eight PNGs and ignores the other 73 paths.
+- Retained image bytes: **1527940**. ZIP bytes: **16135921**, containing all 81 PNGs and manifest.json.
+- Drive folder link is recorded in README; the browser is signed out, so remote upload is still pending and is not included in the completion claim.
 
 ## Limits
 

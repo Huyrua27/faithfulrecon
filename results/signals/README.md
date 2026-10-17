@@ -9,8 +9,25 @@ Start with [research definitions and reproduce commands](../../docs/research/Quy
 - `signal_sanity.csv`: exploratory f_i association, Top1/5/10 precision and enrichment; provisional labels only.
 - `confounder_checks.csv`: GI vs opacity, visibility and GradMag; denominator diagnostics.
 - `phase0_per_seed.csv`: original D2 results, paired with original random removals.
-- `recomputed/`: Top1/5/10 scatter figures for opacity, GradMag, visibility, GI and random across three seeds.
-- `cached/`: equivalent figures using the four original supplied score vectors.
+- `recomputed/`: four representative seed-0 / Top-5% scatter figures: opacity, GradMag, visibility and GI.
+- `cached/`: four seed-0 / Top-5% figures from the original supplied scores, including random.
+- `figure_manifest.csv`: paths, sizes, SHA256 and inclusion status for all 81 experiment figures.
+
+## Full figure archive (Google Drive)
+
+**Drive folder:** [faithfulrecon — complete signal figures](https://drive.google.com/drive/folders/1PNzTQDJtbtzddxTgP39xudricTks5p5E?usp=sharing).
+
+**Upload status: pending.** The supplied folder was opened successfully, but the browser session is not signed in and has no upload control. The ZIP is prepared locally; it has not been uploaded by the agent. Upload it into this folder using a signed-in account with write access, then confirm that the ZIP is visible to reviewers and update this status.
+
+- Local ZIP (gitignored): `runs/signals/archives/QuynhAnh_signal_figures_full.zip`.
+- Contents: all **81 PNGs** (36 cached + 45 recomputed), plus a SHA256 manifest.
+- Archive size: **16135921 bytes**; SHA256: `34f33c05709eea3db2c0bcc33f93d3e12e76be2db828a7ad36358829b297b0e9`.
+- Full extracted figures (gitignored): `runs/signals/figures/{cached,recomputed}/`.
+- Figures kept in the PR: **8 PNGs**, **1527940 bytes total** (approximately 1.53 MB).
+
+Upload the ZIP to the Drive folder above and check the intended reviewers can download it before merge. The remaining 73 figures are preserved locally and in the ZIP, rather than deleted from the experiment outputs.
+
+Reproduce the complete image set using `scripts/reproduce_quynhanh.ps1`. It writes all figures under `runs/` and copies only the eight representative figures into `results/signals/`. The default exporter figure directory is also under `runs/`; `.gitignore` permits only the eight representative signal PNGs in `results/`.
 
 Large per-Gaussian outputs are gitignored under `runs/signals/`:
 

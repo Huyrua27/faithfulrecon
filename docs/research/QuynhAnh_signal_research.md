@@ -239,7 +239,7 @@ Từ root repo, trong môi trường có dependencies:
 Lệnh đơn cho recompute (seed0):
 
 ```powershell
-python scripts/export_signals.py --run_dir '../HKDN-261-20261016T025052Z-1-001/HKDN-261/data/d1/synthetic/v8_az360/seed_0' --checkpoint '../HKDN-261-20261016T025052Z-1-001/HKDN-261/data/seed_0/base.pt' --source checkpoint --config results/phase0/config_used.yaml --signals random opacity gradmag visibility gradient_inconsistency --out_dir runs/signals/recomputed/synthetic/v8_az360/seed_0 --figure_dir results/signals/recomputed
+python scripts/export_signals.py --run_dir '../HKDN-261-20261016T025052Z-1-001/HKDN-261/data/d1/synthetic/v8_az360/seed_0' --checkpoint '../HKDN-261-20261016T025052Z-1-001/HKDN-261/data/seed_0/base.pt' --source checkpoint --config results/phase0/config_used.yaml --signals random opacity gradmag visibility gradient_inconsistency --out_dir runs/signals/recomputed/synthetic/v8_az360/seed_0 --figure_dir runs/signals/figures/recomputed
 ```
 
 Để export score gốc, dùng `--source cached`, bỏ gradient_inconsistency khỏi `--signals`, đổi output/figure sang `cached`. Không cần deserialize checkpoint trong cached mode; vẫn kiểm hash nội dung file.
@@ -249,7 +249,9 @@ Outputs cho mỗi seed nằm trong `runs/signals/{cached,recomputed}/synthetic/v
 - `checkpoint.json`, `scores.npz`, `signal_results.csv` (đúng 6 cột yêu cầu, thứ tự Gaussian giữ nguyên).
 - `rankings.npz` (mỗi signal chứa danh sách Gaussian ID theo rank), `topk.npz` (ID Top1/5/10).
 - `diagnostics.npz`, `signal_summary.json` (counts, phân phối, cutoff ties, metadata).
-- Figures `results/signals/{cached,recomputed}/*_top{1,5,10}.png`: 3D scatter tâm Gaussian, không phải rendered-opacity mask.
+- Bộ đầy đủ 81 hình: `runs/signals/figures/{cached,recomputed}/*_top{1,5,10}.png` (gitignored); đây là 3D scatter tâm Gaussian, không phải rendered-opacity mask.
+- PR chỉ giữ 8 hình seed 0 / Top 5% trong `results/signals/{cached,recomputed}/`. Script reproduce chỉ copy 8 hình đại diện này sang results; các ảnh còn lại để trong runs và gói ZIP để chia sẻ qua Drive.
+- Trạng thái upload và link Drive được ghi trong `results/signals/README.md`; chưa có link thật thì không coi bước chia sẻ đã hoàn tất.
 
 Checkpoint hash phải khớp manifest/score/xyz. Override path cũ bằng `--checkpoint`, không sửa file data gốc. Config dùng để recompute là bản committed `config_used.yaml`; gói data không kèm config gốc hay môi trường chạy gốc nên provenance vẫn có giới hạn.
 

@@ -163,7 +163,7 @@ def main():
     ap.add_argument("--labels", type=Path, help="xyz archive for cached mode")
     ap.add_argument("--out_dir", type=Path, help="default <run_dir>; use a separate path to preserve input")
     ap.add_argument("--config", type=Path, default=Path("configs/phase0.yaml"))
-    ap.add_argument("--figure_dir", type=Path, default=Path("results/signals/figures"))
+    ap.add_argument("--figure_dir", type=Path, default=Path("runs/signals/figures"))
     ap.add_argument("--signals", nargs="+", default=["random", "opacity", "gradmag", "visibility"])
     ap.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     ap.add_argument("--threads", type=int, default=4)

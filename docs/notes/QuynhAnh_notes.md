@@ -1,5 +1,13 @@
 # Nhật ký triển khai — Quỳnh Anh
 
+## 2026-10-17 — Giảm dung lượng ảnh trong PR
+
+- Giữ 8 ảnh seed 0 / Top 5% trong results/signals: 4 cached (gồm random) và 4 research signal tính lại. Tổng dung lượng ảnh còn 1527940 bytes (~1.53 MB), thay cho 81 ảnh / 16423129 bytes.
+- Bảo toàn cả 81 ảnh trong runs/signals/figures/ và runs/signals/archives/QuynhAnh_signal_figures_full.zip, đều gitignored. figure_manifest.csv ghi hash/kích thước và ảnh nào còn trong PR.
+- Exporter mặc định ghi ảnh vào runs; reproduce chỉ copy 8 ảnh đại diện vào results. Thêm .gitignore whitelist để tránh đưa lại toàn bộ ảnh vào commit.
+- Đã nhận và ghi link thư mục Drive vào README. Mở được thư mục faithfulrecon nhưng phiên trình duyệt chưa đăng nhập, không có control upload; chưa upload ZIP. Cần upload bằng account có quyền write và xác nhận reviewer tải được trước merge.
+- Không khôi phục hoặc đưa vào thay đổi này hai file docs/pr đã được người dùng xóa, hay thay đổi ngoài track signals đang có trong working tree.
+
 ## 2026-10-16
 
 ### Đã làm
@@ -58,8 +66,8 @@
 
 - runs/signals/cached/synthetic/v8_az360/seed_{0,1,2}/: scores gốc, CSV, rank và selections.
 - runs/signals/recomputed/synthetic/v8_az360/seed_{0,1,2}/: bốn research signal + random, CSV, rank, selections và diagnostics.
-- results/signals/recomputed/: Top1/5/10 của cả năm signal qua ba seed (45 hình).
-- results/signals/cached/: Top1/5/10 của bốn score gốc qua ba seed (36 hình).
+- runs/signals/figures/recomputed/: Top1/5/10 của cả năm signal qua ba seed (45 hình); results chỉ giữ 4 hình đại diện.
+- runs/signals/figures/cached/: Top1/5/10 của bốn score gốc qua ba seed (36 hình); results chỉ giữ 4 hình đại diện.
 - results/signals/QuynhAnh_signal_audit.md và các CSV nhỏ: checkpoint audit, reproduction, sanity, confounders, D2 per-seed.
 - Tất cả file per-Gaussian để trong runs/ (gitignored), không commit checkpoint hoặc CSV lớn.
 - Lệnh reproduce và test xem docs/research/QuynhAnh_signal_research.md. Bản test cuối ghi trong results/signals/validation.md.
