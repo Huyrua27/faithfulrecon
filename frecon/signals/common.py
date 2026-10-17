@@ -37,27 +37,25 @@ def view_statistics(ctx: SignalContext, contrib_eps: float = 1e-3, lambda_dssim:
       grad_mean  (N,)  mean NDC view-space positional gradient norm over views where visible
       vis_count  (N,)  number of views where the Gaussian contributes (> contrib_eps)
     """
-    if "view_stats" in ctx.cache:
-        return ctx.cache["view_stats"]
+    key = ("view_stats", contrib_eps, lambda_dssim)
+    if key in ctx.cache:
+        ctx.cache["view_stats"] = ctx.cache[key]
+        return ctx.cache[key]
     model = ctx.model
     n, dev = model.n, model.means.device
     grad_sum = torch.zeros(n, device=dev)
     vis_count = torch.zeros(n, device=dev)
     for cam in ctx.cams:
-        for p in model.params.values():
-            p.grad = None
         out = model.render(ctx.rasterize, cam, ctx.bg, return_contrib=True)
-        out["means2d"].retain_grad()
-        photometric_loss(out["image"], cam.image, lambda_dssim).backward()
+        loss = photometric_loss(out["image"], cam.image, lambda_dssim)
+        g, = torch.autograd.grad(loss, out["means2d"])
         with torch.no_grad():
-            g = out["means2d"].grad
             g_ndc = torch.stack([g[:, 0] * cam.W * 0.5, g[:, 1] * cam.H * 0.5], -1).norm(dim=-1)
             seen = out["contrib"] > contrib_eps
             grad_sum[seen] += g_ndc[seen]
             vis_count[seen] += 1
-    for p in model.params.values():
-        p.grad = None
     stats = {"grad_mean": grad_sum / vis_count.clamp_min(1), "vis_count": vis_count}
+    ctx.cache[key] = stats
     ctx.cache["view_stats"] = stats
     return stats
 
