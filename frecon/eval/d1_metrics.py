@@ -12,6 +12,7 @@ TODO(TuanKhai):
   - [x] enrichment_at_k  precision_at_k / prevalence  (1.0 = no better than random)
   - [x] tests/test_d1_metrics.py: small hand-computed cases + sklearn/scipy agreement
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -160,8 +161,6 @@ def all_metrics(
         k_percent = round(k_frac * 100)
 
         result[f"precision_at_{k_percent}"] = precision_at_k(score, label, k_frac)
-        result[f"enrichment_at_{k_percent}"] = enrichment_at_k(
-            score, label, k_frac
-        )
+        result[f"enrichment_at_{k_percent}"] = enrichment_at_k(score, label, k_frac)
 
     return result

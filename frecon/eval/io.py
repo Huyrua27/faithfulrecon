@@ -4,6 +4,7 @@ The file layout and metadata contract are defined in docs/data_format.md.
 Validation raises on mismatches and returns warnings for provisional labels,
 unavailable m_i, degenerate labels, and unverified checkpoints.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -208,13 +209,9 @@ def validate(run: RunData) -> list[str]:
     provisional = labels_meta["provisional"]
 
     if not isinstance(available, (bool, np.bool_)):
-        raise ValueError(
-            f"m_i_available must be bool, got {type(available).__name__}"
-        )
+        raise ValueError(f"m_i_available must be bool, got {type(available).__name__}")
     if not isinstance(provisional, (bool, np.bool_)):
-        raise ValueError(
-            f"provisional must be bool, got {type(provisional).__name__}"
-        )
+        raise ValueError(f"provisional must be bool, got {type(provisional).__name__}")
 
     if not available:
         if run.labels["m_i"].any():
@@ -259,9 +256,7 @@ def validate(run: RunData) -> list[str]:
         path_value = checkpoint_meta["path"]
 
         if not isinstance(path_value, str) or not path_value.strip():
-            raise ValueError(
-                f"Invalid checkpoint path: {path_value!r}"
-            )
+            raise ValueError(f"Invalid checkpoint path: {path_value!r}")
 
         checkpoint_file = Path(path_value)
 

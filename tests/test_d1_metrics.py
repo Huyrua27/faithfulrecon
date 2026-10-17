@@ -118,9 +118,7 @@ def test_empty_input_is_rejected():
 @pytest.mark.parametrize("bad_score", [np.nan, np.inf, -np.inf])
 def test_nonfinite_score_is_rejected(bad_score):
     with pytest.raises(ValueError):
-        metrics.all_metrics(
-            np.array([bad_score, 0.2]), np.array([True, False])
-        )
+        metrics.all_metrics(np.array([bad_score, 0.2]), np.array([True, False]))
 
 
 def test_nonboolean_label_is_rejected(tied_case):
@@ -146,8 +144,3 @@ def test_mismatched_error_length_is_rejected(tied_case):
     score, label, _ = tied_case
     with pytest.raises(ValueError):
         metrics.all_metrics(score, label, np.array([0.1, 0.2]))
-
-
-@pytest.mark.skip(reason="random_baseline.random_reference is not implemented yet")
-def test_random_baseline_unbiased():
-    """Mean random AUROC approaches 0.5 and Precision@K approaches prevalence."""
