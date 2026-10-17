@@ -1,0 +1,48 @@
+# DTU scan24, 8 training views (sparse), object masks, official STL reference.
+# Base models + signals:   python scripts/run_parallel.py --script scripts/phase0.py --config configs/dtu_scan24_v8.yaml --base_only
+# D2 v2.1:                configs/d2v21_dtu_scan24_v8.yaml
+# Data layout (see notebooks/colab_runner.ipynb):
+#   data/dtu/scan24/{image,mask,cameras_sphere.npz}      IDR/NeuS/2DGS preprocessed scan
+#   data/dtu/Points/stl/stl024_total.ply                  DTU MVS 2014 "Points" archive
+out_dir: runs/dtu_scan24_v8
+device: cuda
+renderer: torch
+seeds: [0, 1, 2, 3, 4, 5]
+
+scene:
+  type: dtu
+  root: data/dtu/scan24
+  stl_ply: data/dtu/Points/stl/stl024_total.ply
+  ref_cache: data/dtu/scan24/ref_points.npy   # cropped + normalized reference, computed once
+  min_mask_views: 1
+  max_ref_points: 200000
+  downscale: 4            # 1600x1200 -> 400x300
+  n_train_views: 8
+  n_test_views: 16
+
+init:
+  n_points: 10000         # random init; the scan is normalized to ~ the unit sphere
+  half_extent: 1.0
+
+train:
+  iterations: 7000
+  densify_from: 300
+  densify_until: 3500
+  densify_every: 100
+  opacity_reset_every: 3000
+  max_gaussians: 300000
+  log_every: 500
+
+intervention:
+  signals: [opacity, gradmag, visibility]
+  frac: 0.05
+  n_random: 2
+  reopt_steps: 1000
+  region_alpha_thresh: 0.5
+  neighborhood_radius: 0.05
+
+labels:
+  tau: 0.03               # normalized units; DTU reference contains outliers -> sweep later
+
+analysis:
+  snr_min: 2.0
