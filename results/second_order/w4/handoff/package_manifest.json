@@ -1,0 +1,424 @@
+{
+  "schema": "faithfulrecon_w4_handoff_v1",
+  "scene": "synthetic",
+  "condition": "v8_az360",
+  "base_commit": "3aef207617946e65cda54170ae7b9b130e5be25a",
+  "source_sha256": {
+    "frecon/signals/common.py": "a0ada92c8c0e78fd6bb49f59a8baefa23786825a486c3ee2998600b7554dd324",
+    "frecon/signals/fisher.py": "d37b7b55367343baab91f712f35e6fc4845b205de8d12d22ac9036c75c12416d",
+    "frecon/signals/gradient_inconsistency.py": "0f8491cca39cfe8647a8475cb8f69e989b534c3fb41c4028fc146e79bfcbd6ef",
+    "frecon/signals/gradmag.py": "3751e7c1af979a9f74083124350db1d319e6e77a167fd6137ba9445fd00658b2",
+    "frecon/signals/opacity.py": "8a4eb2fc8caf26f0bb6ddc6cd24c8b72ac1db4e7e44e24a4a949a7e4a23bdad5",
+    "frecon/signals/pup_sensitivity.py": "4bf7ce45cd743c97ed707dffeb1588d36a70da8cc9502f543739fe5f976feca3",
+    "frecon/signals/second_order.py": "8cf261155b2bac5fbc367c02141d0a98ce6489c77fae4507f0f0a96097f496bf",
+    "frecon/signals/second_order_export.py": "151b446e4232a2741a6a2999f2aeaa0923a58875888b9cd198235872bab53768",
+    "frecon/signals/s_geom.py": "3206421741886b63bf21dddb485c99d43f91e0140789e16628525ac0a595aa62",
+    "frecon/signals/visibility.py": "d77bdc5013198baffc59a73dbb5513cdca861174195d79a61ea1cde0b75853e1",
+    "frecon/signals/__init__.py": "b7f4fdb10c8cdf97781ec6f35357b1565b92e9bd2a0de614ac0109282894adef",
+    "scripts/package_second_order_handoff.py": "8ef0479d9624f0e655381466fb937f480d7485e8a64dbcbdd9dce87dddc236e0",
+    "scripts/export_second_order.py": "f819d7a8cce508c656e40aacf26faff29ecb0c4b915b027e1695e7bf81793a13"
+  },
+  "scene_config_sha256": "94a97c1d52c231c5c40a5b670fc0a535638dd7f71db554ee0c171fa23245fe0b",
+  "runs": [
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 0,
+      "checkpoint_sha256": "95bb31a8830d1ca8ab1cadbc65b2c192014b0bbf533b3dd9a1c6b3fc4605c517",
+      "n_gaussians": 27733,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    },
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 1,
+      "checkpoint_sha256": "2483c9a07e7e20fd54834d289cf0afa7cee77b69dad0df2176af78e832d202e5",
+      "n_gaussians": 27984,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    },
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 2,
+      "checkpoint_sha256": "10bc6f76ed740546fede09d37a0e12661dfdc0a7d761422f0befe19367b857d1",
+      "n_gaussians": 28691,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "temporary_phat",
+            "covariance": "population",
+            "fallback": 1.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    }
+  ],
+  "files": {
+    "config.yaml": {
+      "bytes": 755,
+      "sha256": "ef0caa08acd7da6a1034924cf5e73e2050aff60b227d624a240680406934f445"
+    },
+    "d1/synthetic/v8_az360/seed_0/base.pt": {
+      "bytes": 4664594,
+      "sha256": "95bb31a8830d1ca8ab1cadbc65b2c192014b0bbf533b3dd9a1c6b3fc4605c517"
+    },
+    "d1/synthetic/v8_az360/seed_0/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "8e1ee162daf10606e73e21d9866cee43f27991283a0f3e0ddce32ed9721fad5f"
+    },
+    "d1/synthetic/v8_az360/seed_0/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "189ff0f932567e080501bc21c7cca5d5d78b21f372aaf005f9492e84cb56a3b4"
+    },
+    "d1/synthetic/v8_az360/seed_0/geometric_labels.npz": {
+      "bytes": 392287,
+      "sha256": "4b80739f92a5b3cf6af66540dede079e1bc42d164ab7e58839296a9087368786"
+    },
+    "d1/synthetic/v8_az360/seed_0/scores.npz": {
+      "bytes": 975569,
+      "sha256": "2ee7ae914d4abbc742f8aeab5ac30fd9d0b70c2ebf481e22dda5def2c94d2ff4"
+    },
+    "d1/synthetic/v8_az360/seed_1/base.pt": {
+      "bytes": 4706450,
+      "sha256": "2483c9a07e7e20fd54834d289cf0afa7cee77b69dad0df2176af78e832d202e5"
+    },
+    "d1/synthetic/v8_az360/seed_1/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "38b7cb3b763c30a9e1a7f860d0b22089f5561ecdf26e171d07889fe1afd093ff"
+    },
+    "d1/synthetic/v8_az360/seed_1/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "c2d6466e8b5f477174f59b3cea047b46a11949078dacf7251ef89f42a144587a"
+    },
+    "d1/synthetic/v8_az360/seed_1/geometric_labels.npz": {
+      "bytes": 396965,
+      "sha256": "aff82273677f535f99197790dd6a9f8b6eab04ce041514ab0fb853abbec50acd"
+    },
+    "d1/synthetic/v8_az360/seed_1/scores.npz": {
+      "bytes": 982892,
+      "sha256": "f391e903f469a8387e594261d9a4052363fe884fa0d36243bf60447f7a7b3383"
+    },
+    "d1/synthetic/v8_az360/seed_2/base.pt": {
+      "bytes": 4825682,
+      "sha256": "10bc6f76ed740546fede09d37a0e12661dfdc0a7d761422f0befe19367b857d1"
+    },
+    "d1/synthetic/v8_az360/seed_2/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "75f311a553444f05262f00429a4689b5652caf8fab7f5c5af04f80dcba7b3d42"
+    },
+    "d1/synthetic/v8_az360/seed_2/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "1f3f5f5f2a8aacd9fd3c93a904f884574e99ce137483e719d33bd816e8fd54e0"
+    },
+    "d1/synthetic/v8_az360/seed_2/geometric_labels.npz": {
+      "bytes": 406242,
+      "sha256": "7c7e988e61da082209c36d3827c1e0be0eba6a34b9b3b8d94380c672c556e7a6"
+    },
+    "d1/synthetic/v8_az360/seed_2/scores.npz": {
+      "bytes": 1009019,
+      "sha256": "eb63eea7128a23a5721238e1a531f770a64cf05322b37f5c2a236c65a94d54a8"
+    },
+    "README.md": {
+      "bytes": 1026,
+      "sha256": "5e97b08c1374ffab0619d0d61841505c2613fc3aeb5976584d8bd384fc82c40b"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:17:27) [MSC v.1929 64 bit (AMD64)]",
+  "torch": "2.8.0+cu129",
+  "fixture": "trained_checkpoint",
+  "scene_seed": 0,
+  "checkpoint": {
+    "scene": "synthetic",
+    "condition": "v8_az360",
+    "seed": 0,
+    "checkpoint_sha256": "95bb31a8830d1ca8ab1cadbc65b2c192014b0bbf533b3dd9a1c6b3fc4605c517",
+    "n_gaussians": 27733
+  },
+  "command": [
+    "scripts/validate_second_order_signals.py",
+    "--out_dir",
+    "results/second_order/w4/checkpoint_stability",
+    "--run_dir",
+    "runs/d1/synthetic/v8_az360/seed_0",
+    "--checkpoint",
+    "runs/drive_source/data/seed_0/base.pt"
+  ],
+  "reference_samples": 256,
+  "samples": [
+    4,
+    16,
+    64
+  ],
+  "eps": [
+    1e-08,
+    1e-06,
+    0.0001
+  ],
+  "commit": "3aef207617946e65cda54170ae7b9b130e5be25a",
+  "dirty_state": "A  docs/analysis/Phat_W2_W3_plan_2026-10-13.md\nM  docs/notes/Phat_notes.md\nMM docs/research/Phat_second_order_and_d3.md\n M frecon/signals/fisher.py\n M frecon/signals/pup_sensitivity.py\n M frecon/signals/s_geom.py\nMM frecon/signals/second_order.py\nA  results/second_order/convergence.csv\nA  results/second_order/convergence.png\nA  results/second_order/environment.json\nA  results/second_order/report.md\nMM tests/test_second_order.py\n?? docs/analysis/Phat_W3_W4_status_2026-10-23.md\n?? frecon/signals/second_order_export.py\n?? results/second_order/w4/\n?? scripts/export_second_order.py\n?? scripts/validate_second_order_checkpoints.py\n?? scripts/validate_second_order_signals.py\n?? tests/test_second_order_export.py\n",
+  "source_sha256": {
+    "frecon\\signals\\common.py": "a0ada92c8c0e78fd6bb49f59a8baefa23786825a486c3ee2998600b7554dd324",
+    "frecon\\signals\\fisher.py": "d37b7b55367343baab91f712f35e6fc4845b205de8d12d22ac9036c75c12416d",
+    "frecon\\signals\\gradient_inconsistency.py": "0f8491cca39cfe8647a8475cb8f69e989b534c3fb41c4028fc146e79bfcbd6ef",
+    "frecon\\signals\\gradmag.py": "3751e7c1af979a9f74083124350db1d319e6e77a167fd6137ba9445fd00658b2",
+    "frecon\\signals\\opacity.py": "8a4eb2fc8caf26f0bb6ddc6cd24c8b72ac1db4e7e44e24a4a949a7e4a23bdad5",
+    "frecon\\signals\\pup_sensitivity.py": "4bf7ce45cd743c97ed707dffeb1588d36a70da8cc9502f543739fe5f976feca3",
+    "frecon\\signals\\second_order.py": "8cf261155b2bac5fbc367c02141d0a98ce6489c77fae4507f0f0a96097f496bf",
+    "frecon\\signals\\second_order_export.py": "151b446e4232a2741a6a2999f2aeaa0923a58875888b9cd198235872bab53768",
+    "frecon\\signals\\s_geom.py": "3206421741886b63bf21dddb485c99d43f91e0140789e16628525ac0a595aa62",
+    "frecon\\signals\\visibility.py": "d77bdc5013198baffc59a73dbb5513cdca861174195d79a61ea1cde0b75853e1",
+    "frecon\\signals\\__init__.py": "b7f4fdb10c8cdf97781ec6f35357b1565b92e9bd2a0de614ac0109282894adef",
+    "C:\\Users\\phatl\\faithfulrecon\\scripts\\validate_second_order_signals.py": "c91d3486ede12b3d9b061c091914ca07e48893cfe21a0a51aff38c68ed32a75c",
+    "results\\phase0\\config_used.yaml": "ef0caa08acd7da6a1034924cf5e73e2050aff60b227d624a240680406934f445"
+  }
+}

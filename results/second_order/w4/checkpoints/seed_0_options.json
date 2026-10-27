@@ -1,0 +1,88 @@
+{
+  "fisher": {
+    "n_samples": 16,
+    "eps": 1e-12,
+    "params": [
+      "means",
+      "log_scales",
+      "quats",
+      "opacity_logits",
+      "color_logits"
+    ],
+    "basis": "stored",
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast"
+  },
+  "pup": {
+    "n_samples": 16,
+    "eps": 1e-08,
+    "scale_basis": "scale",
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast"
+  },
+  "curvature": {
+    "n_samples": 16,
+    "eps": 1e-08,
+    "basis": "position",
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast"
+  },
+  "gradient_inconsistency": {
+    "delta": 1e-12,
+    "n_min": 2,
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast",
+    "inconsistency": {
+      "provider": "temporary_phat",
+      "covariance": "population",
+      "fallback": 1.0,
+      "unsupported_count": 666,
+      "n_min": 2,
+      "delta": 1e-12,
+      "contrib_eps": 0.001,
+      "lambda_dssim": 0.2
+    }
+  },
+  "s_geom": {
+    "n_samples": 16,
+    "eps": 1e-08,
+    "delta": 1e-12,
+    "n_min": 2,
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast",
+    "inconsistency": {
+      "provider": "temporary_phat",
+      "covariance": "population",
+      "fallback": 1.0,
+      "unsupported_count": 666,
+      "n_min": 2,
+      "delta": 1e-12,
+      "contrib_eps": 0.001,
+      "lambda_dssim": 0.2
+    }
+  },
+  "s_geom_ranksum": {
+    "n_samples": 16,
+    "eps": 1e-08,
+    "delta": 1e-12,
+    "n_min": 2,
+    "protocol": "phat_second_order_v1",
+    "higher": "less_reliable",
+    "renderer": "frecon.render.torch_rast",
+    "inconsistency": {
+      "provider": "temporary_phat",
+      "covariance": "population",
+      "fallback": 1.0,
+      "unsupported_count": 666,
+      "n_min": 2,
+      "delta": 1e-12,
+      "contrib_eps": 0.001,
+      "lambda_dssim": 0.2
+    }
+  }
+}
