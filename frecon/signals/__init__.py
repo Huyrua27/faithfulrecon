@@ -31,19 +31,22 @@ REGISTRY = {
 SIGNALS = ("random", "opacity", "gradmag", "visibility")  # Phase 0 set
 
 
-def compute_signals(model, cams, rasterize, bg, names=SIGNALS, seed: int = 0) -> dict:
+def compute_signals(model, cams, rasterize, bg, names=SIGNALS, seed: int = 0,
+                    signal_params: dict | None = None) -> dict:
     """Compute several signals sharing one SignalContext (per-view passes are cached)."""
     ctx = SignalContext(model=model, cams=cams, rasterize=rasterize, bg=bg, seed=seed)
     out = {}
     for name in names:
         if name not in REGISTRY:
             raise ValueError(f"unknown signal: {name} (known: {sorted(REGISTRY)})")
-        score = REGISTRY[name](ctx)
-        if score.shape != (model.n,) or not torch.isfinite(score).all():
-            raise ValueError(f"signal '{name}' violates the output contract (shape (N,), finite)")
+        score = REGISTRY[name](ctx, **(signal_params or {}).get(name, {}))
+        if score.shape != (model.n,) or score.dtype != torch.float32 or not torch.isfinite(score).all():
+            raise ValueError(f"signal '{name}' violates the output contract (shape (N,), float32, finite)")
         out[name] = score
     if "view_stats" in ctx.cache:
         out["_vis_count"] = ctx.cache["view_stats"]["vis_count"]
+    if "gradient_inconsistency_stats" in ctx.cache:
+        out["_gi_count"] = ctx.cache["gradient_inconsistency_stats"]["count"]
     return out
 
 
