@@ -244,6 +244,9 @@ def test_fisher_and_pup_formulas(monkeypatch):
 
 def test_opposite_gradient_inconsistency_and_fallback(monkeypatch):
     from frecon.signals import s_geom
+    def unavailable(*args, **kwargs):
+        raise NotImplementedError("exercise the historical fallback")
+    monkeypatch.setattr(s_geom.gradient_inconsistency, "compute", unavailable)
     ctx = tiny_context()
     def render(means, *args, **kwargs):
         return {"image": means.sum().reshape(1, 1, 1), "contrib": torch.ones(means.shape[0])}
@@ -258,6 +261,21 @@ def test_opposite_gradient_inconsistency_and_fallback(monkeypatch):
     torch.testing.assert_close(same, torch.zeros(20))
     unknown = s_geom.inconsistency(replace(ctx, cams=ctx.cams[:1], cache={}))
     torch.testing.assert_close(unknown, torch.ones(20))
+
+
+def test_official_inconsistency_provider_and_custom_visibility():
+    from frecon.signals import s_geom
+    ctx = tiny_context()
+    for cam in ctx.cams:
+        cam.image = ctx.model.render(ctx.rasterize, cam, ctx.bg)["image"].detach() * 0.95
+    # A custom threshold must still delegate to the merged provider, whose unknown-view
+    # convention is zero. The historical fallback would incorrectly return ones here.
+    score = s_geom.inconsistency(ctx, contrib_eps=1e20, lambda_dssim=0.0)
+    torch.testing.assert_close(score, torch.zeros(20))
+    meta = ctx.cache["phat_inconsistency_meta"]
+    assert meta["provider"] == "quynhanh" and meta["fallback"] == 0.0
+    assert meta["unsupported_count"] == 20 and meta["contrib_eps"] == 1e20
+    assert meta["effective_delta"] == meta["delta"] == 1e-12
 
 
 def test_rank_ties_and_invalid_regularization():

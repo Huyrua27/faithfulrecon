@@ -2,13 +2,15 @@
 
 **Owner:** Phát · **Branches:** `feature/phat-second-order`, `feature/phat-d3`
 
-**Status (27 October 2026):** W3 estimator validated; W4 signals implemented and exported
-on all three shared Phase 0 checkpoints, with baseline arrays preserved. The portable
-package is verified on Drive and passes the unmodified Tuấn Khải D1 pipeline at `e4ba397`.
-Training-scene audits, sample/damping diagnostics, RTX 4060 profiling and handoff receipts
-are in `results/second_order/w4/`. GTX 1650 measurement is an explicit user-deferred task;
-scientific reviewer acceptance remains open. D3 remains scheduled for W6–W7.
-Delivery instructions: `docs/analysis/Phat_W4_handoff_2026-10-27.md`.
+**Status (27 October 2026, PR evaluation):** latest main `02a1536` is merged, including
+Quỳnh Anh's official v and Tuấn Khải's D1. W4 now delegates to that v implementation and
+records its zero fallback/counts; the earlier temporary-v package remains a historical
+artifact. All three checkpoints are re-exported and pass the merged D1 pipeline.
+Full suite: 132 passed, 7 skipped. Current evidence is in
+`results/second_order/w4/main_integration/`; review:
+`docs/analysis/Phat_W4_PR_review_2026-10-27.md`.
+GTX 1650 measurement remains user-deferred. Scientific reviewer acceptance is open;
+D3 remains scheduled for W6–W7.
 
 Spec: `docs/tasks/Phat_tasks.md`. Code: `frecon/signals/{second_order,fisher,pup_sensitivity,s_geom}.py`,
 `frecon/eval/d3.py`, `scripts/run_d3.py`. Tests: `tests/test_second_order.py`, `tests/test_d3.py`.
@@ -150,14 +152,17 @@ association or intervention response. Invisible blocks give `-6 log(eps)`.
 `eps=1e-8` gives `u_i=3e8` for a zero block. High values indicate weak local image
 constraint in this basis; this is not a full-scene marginal covariance.
 
-The local temporary `v_i` is the population trace variance of position gradients of
+`v_i` is the population trace variance of position gradients of
 the training photometric loss, divided by squared mean gradient plus `delta=1e-12`.
 Only views with contribution above `1e-3` enter; the loss uses DSSIM weight 0.2.
-With fewer than `n_min=2` eligible views, `v_i=1` denotes unknown evidence. This
-convention is finite, but is not a calibrated prior. Counts/providers are exported.
-The three checkpoints have 666 / 800 / 638 such Gaussians. Quỳnh Anh's implementation
-is used when available; only `NotImplementedError` activates this local fallback,
-and her source file is unchanged. Gradient buffers/model values are preserved.
+The merged Quỳnh Anh implementation uses float64 Welford moments and returns `v_i=0`
+with fewer than `n_min=2` eligible views. Zero here is no evidence of disagreement,
+not evidence of reliability. The historical temporary implementation returned 1 for
+the same unknown case. Providers, fallback values, counts and effective delta are
+exported; the three checkpoints have 666 / 800 / 638 unsupported Gaussians.
+Only `NotImplementedError` activates the local fallback; Quỳnh Anh's source is unchanged
+relative to main. Custom thresholds/loss weights also delegate to the official provider.
+Gradient buffers/model values are preserved. Neither fallback is a calibrated prior.
 
 The exported variants are `curvature=u`, `gradient_inconsistency=v`, `s_geom=u*v`,
 and `s_geom_ranksum=rank(u)+rank(v)`. Ranks are average ranks for ties, normalized
@@ -175,7 +180,7 @@ the file without weakening these guards or rewriting the original manifest.
 condition, seed, hash and count; replacement requires `--overwrite`. Existing
 baseline arrays and metadata are retained. The standard registry calls the five
 implemented second-order names with S=4 defaults; the handoff exporter uses S=16
-and records every option. The temporary `v` is provided through Phát's exporter.
+and records every option, including the actual v provider and insufficient-view rule.
 
 The shared package passed transfer checksums (39 files), checkpoint hashes, exact
 label-coordinate row alignment, and exact baseline comparison against `signals.pt`.
@@ -184,6 +189,12 @@ and recomputes the supplied distances/floater labels. Six new scores plus four
 baselines are saved in each ignored `runs/d1/synthetic/v8_az360/seed_{0,1,2}/scores.npz`.
 Reports, options, source hashes, and reproduction commands are in
 `results/second_order/w4/report.md`.
+
+Those original exports used the temporary v. After main integration, the current
+official-v exports are at `runs/pr_review/d1/`; their portable package, source audit
+and merged-D1 evidence are recorded in `results/second_order/w4/main_integration/`.
+Reproduce the earlier package with commit `3b85879`; do not pool different v providers
+as one unchanged signal definition.
 
 Initial AUROC against **provisional** `f_i` is below 0.5 for the information/curvature
 scores and the product; the local `v` is above 0.5. This is an association diagnostic,

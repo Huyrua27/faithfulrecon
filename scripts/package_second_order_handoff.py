@@ -123,16 +123,17 @@ def build_package(runs_root, checkpoint_root, baseline_root, config, out_dir,
         "# W4 second-order handoff\n\n"
         "Extract this ZIP into a new directory. Verify it before use with:\n\n"
         "    python scripts/package_second_order_handoff.py --verify <package.zip>\n\n"
-        f"Use the consumer's D1 implementation (main's D1 CLI is still a stub):\n\n"
+        "Use the repository's merged D1 implementation:\n\n"
         f"    python scripts/run_d1.py --scene {scene} --condition {condition} "
         "--runs_root <extracted-package>/d1 --out_dir <results-dir> --n_random 100\n\n"
         "All six new scores use high = less reliable. Four baseline arrays are preserved.\n"
         "Checkpoints are included and referenced relative to each run; original manifests\n"
         "are preserved in checkpoint.source.json. Do not copy those source paths over\n"
         "the portable manifests. config.yaml reproduces the source scene.\n\n"
-        "Labels are provisional; m_i_available=False means skip m_i metrics. The v provider\n"
-        "is temporary_phat with v=1 for fewer than two contributing views; all options\n"
-        "are recorded in scores.npz/meta and manifest.json. This package does not claim\n"
+        "Labels are provisional; m_i_available=False means skip m_i metrics. The v provider,\n"
+        "insufficient-view fallback, counts and all options are recorded in scores.npz/meta\n"
+        "and manifest.json. Do not combine packages with different providers as one signal\n"
+        "definition. This package does not claim\n"
         "D2/D3 validity. GTX 1650 profiling and teammate scientific review remain open.\n",
         encoding="utf-8")
     root = Path(__file__).resolve().parents[1]

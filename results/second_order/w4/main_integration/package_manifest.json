@@ -1,0 +1,442 @@
+{
+  "schema": "faithfulrecon_w4_handoff_v1",
+  "scene": "synthetic",
+  "condition": "v8_az360",
+  "base_commit": "990ed8d71593cf6bed620499a1e3996336fbba21",
+  "source_sha256": {
+    "frecon/signals/common.py": "a31a9005b6233b3649a66f03858fe4da55131056e385ed2f58dafddd742e894c",
+    "frecon/signals/fisher.py": "d37b7b55367343baab91f712f35e6fc4845b205de8d12d22ac9036c75c12416d",
+    "frecon/signals/gradient_inconsistency.py": "eeb14188b78edaa6ca955e9baff68085b947cca554d817e2ea610c3a6b9c9461",
+    "frecon/signals/gradmag.py": "376380fc05f9eea411faf8e0386b07052d0a031206b1e1fe39fa4063c7999359",
+    "frecon/signals/opacity.py": "e5f3378b2015944af64372da49fbc6f37af91ebcd9eb23a5b28da08e2ae0b8e3",
+    "frecon/signals/pup_sensitivity.py": "4bf7ce45cd743c97ed707dffeb1588d36a70da8cc9502f543739fe5f976feca3",
+    "frecon/signals/second_order.py": "8cf261155b2bac5fbc367c02141d0a98ce6489c77fae4507f0f0a96097f496bf",
+    "frecon/signals/second_order_export.py": "151b446e4232a2741a6a2999f2aeaa0923a58875888b9cd198235872bab53768",
+    "frecon/signals/s_geom.py": "dbd78a75411525cceffd3c57a2bc600d76496783982b63148f7617796867d9ae",
+    "frecon/signals/visibility.py": "16ec428cf74558fd0e99a34d266e76a3e0b7575b2a777ca03f349a20bc6ebc61",
+    "frecon/signals/__init__.py": "022862b2ab1c5b941e083b09f11d814f2854e52c27ef55b9b273fa6bd055fcae",
+    "scripts/package_second_order_handoff.py": "27b49167848ff94ceb1efd235195295168f23da524e6c189a01e50c98e1d47e8",
+    "scripts/export_second_order.py": "f819d7a8cce508c656e40aacf26faff29ecb0c4b915b027e1695e7bf81793a13"
+  },
+  "scene_config_sha256": "94a97c1d52c231c5c40a5b670fc0a535638dd7f71db554ee0c171fa23245fe0b",
+  "runs": [
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 0,
+      "checkpoint_sha256": "95bb31a8830d1ca8ab1cadbc65b2c192014b0bbf533b3dd9a1c6b3fc4605c517",
+      "n_gaussians": 27733,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 666,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    },
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 1,
+      "checkpoint_sha256": "2483c9a07e7e20fd54834d289cf0afa7cee77b69dad0df2176af78e832d202e5",
+      "n_gaussians": 27984,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 800,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    },
+    {
+      "scene": "synthetic",
+      "condition": "v8_az360",
+      "seed": 2,
+      "checkpoint_sha256": "10bc6f76ed740546fede09d37a0e12661dfdc0a7d761422f0befe19367b857d1",
+      "n_gaussians": 28691,
+      "signals": [
+        "curvature",
+        "fisher",
+        "gradient_inconsistency",
+        "gradmag",
+        "opacity",
+        "pup",
+        "random",
+        "s_geom",
+        "s_geom_ranksum",
+        "visibility"
+      ],
+      "signal_params": {
+        "source": "phase0 signals.pt",
+        "fisher": {
+          "n_samples": 16,
+          "eps": 1e-12,
+          "params": [
+            "means",
+            "log_scales",
+            "quats",
+            "opacity_logits",
+            "color_logits"
+          ],
+          "basis": "stored",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "pup": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "scale_basis": "scale",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "curvature": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "basis": "position",
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast"
+        },
+        "gradient_inconsistency": {
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        },
+        "s_geom_ranksum": {
+          "n_samples": 16,
+          "eps": 1e-08,
+          "delta": 1e-12,
+          "n_min": 2,
+          "protocol": "phat_second_order_v1",
+          "higher": "less_reliable",
+          "renderer": "frecon.render.torch_rast",
+          "inconsistency": {
+            "provider": "quynhanh",
+            "covariance": "population",
+            "fallback": 0.0,
+            "unsupported_count": 638,
+            "n_min": 2,
+            "delta": 1e-12,
+            "effective_delta": 1e-12,
+            "delta_rel": 0.0,
+            "contrib_eps": 0.001,
+            "lambda_dssim": 0.2
+          }
+        }
+      },
+      "provisional": true,
+      "m_i_available": false
+    }
+  ],
+  "files": {
+    "config.yaml": {
+      "bytes": 755,
+      "sha256": "ef0caa08acd7da6a1034924cf5e73e2050aff60b227d624a240680406934f445"
+    },
+    "d1/synthetic/v8_az360/seed_0/base.pt": {
+      "bytes": 4664594,
+      "sha256": "95bb31a8830d1ca8ab1cadbc65b2c192014b0bbf533b3dd9a1c6b3fc4605c517"
+    },
+    "d1/synthetic/v8_az360/seed_0/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "8e1ee162daf10606e73e21d9866cee43f27991283a0f3e0ddce32ed9721fad5f"
+    },
+    "d1/synthetic/v8_az360/seed_0/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "189ff0f932567e080501bc21c7cca5d5d78b21f372aaf005f9492e84cb56a3b4"
+    },
+    "d1/synthetic/v8_az360/seed_0/geometric_labels.npz": {
+      "bytes": 392287,
+      "sha256": "4b80739f92a5b3cf6af66540dede079e1bc42d164ab7e58839296a9087368786"
+    },
+    "d1/synthetic/v8_az360/seed_0/scores.npz": {
+      "bytes": 974205,
+      "sha256": "7fd1e7c3a3c7cd7ed0586c82225563ad100f19552bdd9330aba5944a4614fef2"
+    },
+    "d1/synthetic/v8_az360/seed_1/base.pt": {
+      "bytes": 4706450,
+      "sha256": "2483c9a07e7e20fd54834d289cf0afa7cee77b69dad0df2176af78e832d202e5"
+    },
+    "d1/synthetic/v8_az360/seed_1/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "38b7cb3b763c30a9e1a7f860d0b22089f5561ecdf26e171d07889fe1afd093ff"
+    },
+    "d1/synthetic/v8_az360/seed_1/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "c2d6466e8b5f477174f59b3cea047b46a11949078dacf7251ef89f42a144587a"
+    },
+    "d1/synthetic/v8_az360/seed_1/geometric_labels.npz": {
+      "bytes": 396965,
+      "sha256": "aff82273677f535f99197790dd6a9f8b6eab04ce041514ab0fb853abbec50acd"
+    },
+    "d1/synthetic/v8_az360/seed_1/scores.npz": {
+      "bytes": 981221,
+      "sha256": "54ebffab5cd7f3347e776bbf7d7c4f6a4aad7ac4b864fd3bdeb256b166116fff"
+    },
+    "d1/synthetic/v8_az360/seed_2/base.pt": {
+      "bytes": 4825682,
+      "sha256": "10bc6f76ed740546fede09d37a0e12661dfdc0a7d761422f0befe19367b857d1"
+    },
+    "d1/synthetic/v8_az360/seed_2/checkpoint.json": {
+      "bytes": 156,
+      "sha256": "75f311a553444f05262f00429a4689b5652caf8fab7f5c5af04f80dcba7b3d42"
+    },
+    "d1/synthetic/v8_az360/seed_2/checkpoint.source.json": {
+      "bytes": 243,
+      "sha256": "1f3f5f5f2a8aacd9fd3c93a904f884574e99ce137483e719d33bd816e8fd54e0"
+    },
+    "d1/synthetic/v8_az360/seed_2/geometric_labels.npz": {
+      "bytes": 406242,
+      "sha256": "7c7e988e61da082209c36d3827c1e0be0eba6a34b9b3b8d94380c672c556e7a6"
+    },
+    "d1/synthetic/v8_az360/seed_2/scores.npz": {
+      "bytes": 1007729,
+      "sha256": "117cd5c0c52370bbba3c5393e3d23004a47a4582ec7b6104f44cf1613bde0e82"
+    },
+    "README.md": {
+      "bytes": 1053,
+      "sha256": "e262ba3f5b48521877d9215a571195bd7250807bc2434f7488adeb073a311aa3"
+    }
+  }
+}

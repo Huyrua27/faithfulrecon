@@ -61,8 +61,9 @@ def inconsistency(ctx: SignalContext, delta: float = 1e-12, n_min: int = 2,
     """Use Quỳnh Anh's implementation when available; otherwise use this local fallback.
 
     Population gradient variance trace / (squared mean + delta), over contributing training
-    views. Fewer than n_min views receive v=1 (unknown), not v=0 (perfect agreement). Provider
-    and unsupported count are recorded in ctx.cache. The fallback preserves model .grad.
+    views. The official provider returns v=0 for fewer than n_min views; the historical
+    local fallback uses v=1 (unknown). Neither is observed agreement. Provider, fallback
+    and unsupported count are recorded in ctx.cache. Both preserve model .grad.
     """
     positive_scalar(delta, "delta")
     if isinstance(n_min, bool) or not isinstance(n_min, Integral) or n_min < 2:
@@ -72,14 +73,20 @@ def inconsistency(ctx: SignalContext, delta: float = 1e-12, n_min: int = 2,
     key = ("phat_inconsistency", delta, n_min, contrib_eps, lambda_dssim)
     if key in ctx.cache:
         return ctx.cache[key]
-    if contrib_eps == 1e-3 and lambda_dssim == 0.2:
-        try:
-            score = finite_score(gradient_inconsistency.compute(ctx, delta=delta, n_min=n_min))
-            ctx.cache[key] = score
-            ctx.cache["phat_inconsistency_meta"] = {"provider": "quynhanh"}
-            return score
-        except NotImplementedError:
-            pass
+    try:
+        score = finite_score(gradient_inconsistency.compute(
+            ctx, delta=delta, n_min=int(n_min), contrib_eps=contrib_eps, lambda_dssim=lambda_dssim))
+        stats = ctx.cache["gradient_inconsistency_stats"]
+        ctx.cache[key] = score
+        ctx.cache["phat_inconsistency_meta"] = {
+            "provider": "quynhanh", "covariance": "population", "fallback": 0.0,
+            "unsupported_count": int((stats["count"] < n_min).sum()), "n_min": int(n_min),
+            "delta": delta, "effective_delta": stats["effective_delta"], "delta_rel": 0.0,
+            "contrib_eps": contrib_eps, "lambda_dssim": lambda_dssim,
+        }
+        return score
+    except NotImplementedError:
+        pass
     if not ctx.cams or any(cam.image is None for cam in ctx.cams):
         raise ValueError("gradient inconsistency requires training cameras with GT images")
     n, device = ctx.model.n, ctx.model.means.device

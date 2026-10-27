@@ -1,5 +1,10 @@
 # W4 handoff — Phát, 27 October 2026
 
+**Later PR update:** main now includes the official v and D1 implementations. This
+document records the original temporary-v handoff; use
+`docs/analysis/Phat_W4_PR_review_2026-10-27.md` for the current official-v package
+and validation against main `02a1536`. The original package is preserved unchanged.
+
 The W4 implementation and portable three-seed data package are ready for review.
 This closes the delivery work started on 23 October. GTX 1650 profiling remains
 an open task, explicitly deferred by the user on 27 October; reviewer acceptance

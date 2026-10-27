@@ -91,7 +91,9 @@ def test_cli_exports_contract_and_checkpoint_guard(tmp_path):
         meta = archive["meta"].item()
         assert meta["checkpoint_sha256"] == hashlib.sha256((run / "base.pt").read_bytes()).hexdigest()
         assert meta["signal_params"]["pup"]["scale_basis"] == "scale"
-        assert meta["signal_params"]["s_geom"]["inconsistency"]["provider"] == "temporary_phat"
+        inconsistency = meta["signal_params"]["s_geom"]["inconsistency"]
+        assert inconsistency["provider"] == "quynhanh" and inconsistency["fallback"] == 0.0
+        assert "unsupported_count" in inconsistency
     manifest = json.loads((run / "checkpoint.json").read_text())
     manifest["sha256"] = "f" * 64
     (run / "checkpoint.json").write_text(json.dumps(manifest))

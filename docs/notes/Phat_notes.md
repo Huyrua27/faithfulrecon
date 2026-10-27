@@ -5,6 +5,20 @@ Branch: `feature/phat-second-order, feature/phat-d3`
 Ghi theo ngày, mới nhất ở trên. Gồm: implementation issues, assumptions, failed attempts,
 câu hỏi cần thảo luận. Ngắn gọn, có link tới commit / file / log.
 
+## 2026-10-27 — PR evaluation sau khi cập nhật main
+
+- Main mới `02a1536` đã merge code signals của Quỳnh Anh và D1 của Tuấn Khải;
+  merge main vào feature branch trước khi mở PR theo CONTRIBUTING.
+- Phát hiện thay đổi convention v: official dùng 0 cho <n_min view, bản tạm dùng 1.
+  Wrapper giờ delegate cả custom threshold/loss weight, ghi fallback/provider/count/
+  effective delta; test fallback cũ isolate bằng NotImplementedError.
+- Full suite sau tích hợp: **132 passed, 7 skipped**. Export lại 3 checkpoint sang
+  `runs/pr_review/d1`, giữ baseline; D1 trên main chạy 30 rows và xác minh hash checkpoint.
+- Package official-v và evidence mới được tách khỏi package temporary-v cũ để giữ
+  provenance. Không diễn giải AUROC thấp thành lỗi estimator hoặc tự đảo hướng score.
+- Evaluation cuối: `docs/analysis/Phat_W4_PR_review_2026-10-27.md`.
+  GTX 1650 tiếp tục là task user-deferred; D3 vẫn ngoài scope PR W4.
+
 ## 2026-10-27
 
 - **Handoff:** tạo ZIP portable gồm base checkpoint, scores, labels cho 3 seed,

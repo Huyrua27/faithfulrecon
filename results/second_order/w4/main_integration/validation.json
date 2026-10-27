@@ -1,0 +1,18 @@
+{
+  "base_main": "02a1536fb9d13638f42d27b609d1109485e3d2cb",
+  "consumer": "merged scripts/run_d1.py, unchanged from main",
+  "metric_rows": 30,
+  "n_random": 100,
+  "checkpoint_hashes_verified": true,
+  "expected_warnings": [
+    "Validation warning: m_i unavailable; skip m_i metrics",
+    "Validation warning: provisional geometric labels; not official ground truth"
+  ],
+  "max_auroc_difference": 0.0,
+  "gi_provider": "quynhanh",
+  "insufficient_view_fallback": 0.0,
+  "tests": {
+    "passed": 132,
+    "skipped": 7
+  }
+}

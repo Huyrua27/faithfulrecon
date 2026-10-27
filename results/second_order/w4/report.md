@@ -1,5 +1,11 @@
 # W4 second-order signals: implementation and checkpoint handoff
 
+**Current PR evidence:** `main_integration/` records the refreshed official-v exports
+after merging main `02a1536`. The full suite is **132 passed, 7 skipped**; the merged
+D1 pipeline accepts all three runs (30 rows). See
+`docs/analysis/Phat_W4_PR_review_2026-10-27.md` for the provider change and final review.
+The original numerical experiments below remain versioned historical evidence.
+
 **27 October delivery update:** a portable package is verified on the shared Drive
 and passes the unmodified D1 consumer at `e4ba397` (30 rows, checkpoint hashes verified).
 The full suite now reports **54 passed, 14 skipped**. GTX 1650 profiling was explicitly
