@@ -24,6 +24,18 @@ data/*
 results/**/signal_results*.csv
 results/**/*.npz
 
+# Full signal figures are generated under runs/signals/figures/.
+# Commit only these eight representative seed-0 / Top-5% figures.
+results/signals/**/*.png
+!results/signals/cached/synthetic_v8_az360_seed0_random_top5.png
+!results/signals/cached/synthetic_v8_az360_seed0_opacity_top5.png
+!results/signals/cached/synthetic_v8_az360_seed0_gradmag_top5.png
+!results/signals/cached/synthetic_v8_az360_seed0_visibility_top5.png
+!results/signals/recomputed/synthetic_v8_az360_seed0_opacity_top5.png
+!results/signals/recomputed/synthetic_v8_az360_seed0_gradmag_top5.png
+!results/signals/recomputed/synthetic_v8_az360_seed0_visibility_top5.png
+!results/signals/recomputed/synthetic_v8_az360_seed0_gradient_inconsistency_top5.png
+
 # OS / editors
 .DS_Store
 Thumbs.db

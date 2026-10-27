@@ -1,0 +1,60 @@
+2026-10-17 11:45:30,046 INFO D1 started: scene=synthetic, condition=v8_az360, n_random=100
+2026-10-17 11:45:30,048 INFO Processing run: runs\d1\synthetic\v8_az360\seed_0
+2026-10-17 11:45:30,049 INFO Input: path=runs\d1\synthetic\v8_az360\seed_0\scores.npz sha256=6d0ceddc8a98bafcd4df10d46d4382488d6f9e343b6d367c1147bb7ad37328aa
+2026-10-17 11:45:30,050 INFO Input: path=runs\d1\synthetic\v8_az360\seed_0\geometric_labels.npz sha256=4b80739f92a5b3cf6af66540dede079e1bc42d164ab7e58839296a9087368786
+2026-10-17 11:45:30,062 WARNING Validation warning: m_i unavailable; skip m_i metrics
+2026-10-17 11:45:30,062 WARNING Validation warning: provisional geometric labels; not official ground truth
+2026-10-17 11:45:30,062 INFO Processing run: runs\d1\synthetic\v8_az360\seed_1
+2026-10-17 11:45:30,063 INFO Input: path=runs\d1\synthetic\v8_az360\seed_1\scores.npz sha256=ff3da448ea21ea144414bdae894e9dc9f7864bcf771dae4a90a300fb1b143a94
+2026-10-17 11:45:30,064 INFO Input: path=runs\d1\synthetic\v8_az360\seed_1\geometric_labels.npz sha256=aff82273677f535f99197790dd6a9f8b6eab04ce041514ab0fb853abbec50acd
+2026-10-17 11:45:30,075 WARNING Validation warning: m_i unavailable; skip m_i metrics
+2026-10-17 11:45:30,075 WARNING Validation warning: provisional geometric labels; not official ground truth
+2026-10-17 11:45:30,075 INFO Processing run: runs\d1\synthetic\v8_az360\seed_2
+2026-10-17 11:45:30,076 INFO Input: path=runs\d1\synthetic\v8_az360\seed_2\scores.npz sha256=60e402552a9b92eccd53c93872b2e7c768b265ac1c55d854b245361be1dd2408
+2026-10-17 11:45:30,077 INFO Input: path=runs\d1\synthetic\v8_az360\seed_2\geometric_labels.npz sha256=7c7e988e61da082209c36d3827c1e0be0eba6a34b9b3b8d94380c672c556e7a6
+2026-10-17 11:45:30,088 WARNING Validation warning: m_i unavailable; skip m_i metrics
+2026-10-17 11:45:30,088 WARNING Validation warning: provisional geometric labels; not official ground truth
+2026-10-17 11:45:31,915 INFO Matched random: seed=0 label=f_i metric=prevalence R=100 mean=0.083979375 std=1.3877788e-17 q05=0.083979375 q95=0.083979375
+2026-10-17 11:45:31,915 INFO Matched random: seed=0 label=f_i metric=auroc R=100 mean=0.4984013 std=0.0058044836 q05=0.48976308 q95=0.50776796
+2026-10-17 11:45:31,915 INFO Matched random: seed=0 label=f_i metric=auprc R=100 mean=0.084045071 std=0.0015007186 q05=0.081788744 q95=0.086845812
+2026-10-17 11:45:31,915 INFO Matched random: seed=0 label=f_i metric=spearman R=100 mean=-0.00026263583 std=0.0055426854 q05=-0.0098207806 q95=0.0075010693
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=precision_at_1 R=100 mean=0.087400722 std=0.015471283 q05=0.061191336 q95=0.11191336
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=enrichment_at_1 R=100 mean=1.0407403 std=0.18422718 q05=0.72864719 q95=1.3326291
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=precision_at_5 R=100 mean=0.083266042 std=0.0069607263 q05=0.072062004 q95=0.093763518
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=enrichment_at_5 R=100 mean=0.99150586 std=0.082886142 q05=0.8580917 q95=1.1165065
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=precision_at_10 R=100 mean=0.083490804 std=0.0048517782 q05=0.075369636 q95=0.090894338
+2026-10-17 11:45:31,916 INFO Matched random: seed=0 label=f_i metric=enrichment_at_10 R=100 mean=0.99418226 std=0.057773449 q05=0.89747793 q95=1.0823412
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=prevalence R=100 mean=0.09044454 std=1.3877788e-17 q05=0.09044454 q95=0.09044454
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=auroc R=100 mean=0.4997253 std=0.0056003734 q05=0.48979569 q95=0.50781509
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=auprc R=100 mean=0.090610513 std=0.001579641 q05=0.087989206 q95=0.093168283
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=spearman R=100 mean=-0.00064201619 std=0.0058840959 q05=-0.011156714 q95=0.0087853884
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=precision_at_1 R=100 mean=0.088678571 std=0.017306179 q05=0.057142857 q95=0.11785714
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=enrichment_at_1 R=100 mean=0.98047457 std=0.19134576 q05=0.63179997 q95=1.3030874
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=precision_at_5 R=100 mean=0.089521086 std=0.007166609 q05=0.077162259 q95=0.10150107
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=enrichment_at_5 R=100 mean=0.98978984 std=0.079237608 q05=0.85314447 q95=1.1222465
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=precision_at_10 R=100 mean=0.090182273 std=0.0046360077 q05=0.082130093 q95=0.097569693
+2026-10-17 11:45:34,081 INFO Matched random: seed=1 label=f_i metric=enrichment_at_10 R=100 mean=0.99710025 std=0.051258017 q05=0.90807132 q95=1.0787792
+2026-10-17 11:45:36,818 INFO Matched random: seed=2 label=f_i metric=prevalence R=100 mean=0.085985152 std=1.3877788e-17 q05=0.085985152 q95=0.085985152
+2026-10-17 11:45:36,818 INFO Matched random: seed=2 label=f_i metric=auroc R=100 mean=0.49998275 std=0.0060209975 q05=0.48947502 q95=0.50945162
+2026-10-17 11:45:36,818 INFO Matched random: seed=2 label=f_i metric=auprc R=100 mean=0.086227658 std=0.0016453208 q05=0.083459203 q95=0.089081472
+2026-10-17 11:45:36,818 INFO Matched random: seed=2 label=f_i metric=spearman R=100 mean=0.00043062282 std=0.0057256191 q05=-0.0076041612 q95=0.0092759836
+2026-10-17 11:45:36,818 INFO Matched random: seed=2 label=f_i metric=precision_at_1 R=100 mean=0.085818815 std=0.015987337 q05=0.062543554 q95=0.10818815
+2026-10-17 11:45:36,819 INFO Matched random: seed=2 label=f_i metric=enrichment_at_1 R=100 mean=0.99806552 std=0.18593137 q05=0.72737621 q95=1.258219
+2026-10-17 11:45:36,819 INFO Matched random: seed=2 label=f_i metric=precision_at_5 R=100 mean=0.085644599 std=0.0073567862 q05=0.075923345 q95=0.099651568
+2026-10-17 11:45:36,819 INFO Matched random: seed=2 label=f_i metric=enrichment_at_5 R=100 mean=0.9960394 std=0.085558797 q05=0.88298204 q95=1.1589393
+2026-10-17 11:45:36,819 INFO Matched random: seed=2 label=f_i metric=precision_at_10 R=100 mean=0.085737191 std=0.0051531676 q05=0.07736145 q95=0.093830603
+2026-10-17 11:45:36,819 INFO Matched random: seed=2 label=f_i metric=enrichment_at_10 R=100 mean=0.99711623 std=0.0599309 q05=0.89970708 q95=1.0912419
+2026-10-17 11:45:38,804 INFO Figures written: results\d1\phase0_provisional_2026-10-17\synthetic\v8_az360\figures (root labels=f_i; m_i subdirectory if available)
+2026-10-17 11:45:38,804 INFO Aggregate: signal=random label=f_i metric=auroc mean=0.5026 std=0.0035 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=random label=f_i metric=auprc mean=0.0877 std=0.0039 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=random label=f_i metric=precision_at_5 mean=0.0886 std=0.0036 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=opacity label=f_i metric=auroc mean=0.3486 std=0.0166 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=opacity label=f_i metric=auprc mean=0.0610 std=0.0029 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=opacity label=f_i metric=precision_at_5 mean=0.0000 std=0.0000 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=gradmag label=f_i metric=auroc mean=0.6536 std=0.0085 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=gradmag label=f_i metric=auprc mean=0.1252 std=0.0006 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=gradmag label=f_i metric=precision_at_5 mean=0.1079 std=0.0069 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=visibility label=f_i metric=auroc mean=0.3550 std=0.0095 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=visibility label=f_i metric=auprc mean=0.0618 std=0.0035 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO Aggregate: signal=visibility label=f_i metric=precision_at_5 mean=0.0274 std=0.0259 n_valid=3/3 seeds=[0, 1, 2]
+2026-10-17 11:45:38,805 INFO D1 completed: rows=12, elapsed=8.760 seconds

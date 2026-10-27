@@ -2,17 +2,14 @@
 
 score_i = mean over training views where Gaussian i is visible of
           || dL_c / d mu2d_i ||  (view-space positional gradient, NDC units)
-This is the 3DGS densification statistic, recomputed once on the trained model.
+Related to the 3DGS densification statistic, recomputed once on a fixed checkpoint.
 
-Status: implemented and used in Phase 0 (measurable response, SNR_in ~4.7).
-TODO(QuynhAnh):
-  - [ ] Compare with the accumulator inside 3DGS training (frecon/train.py, train_step):
-        same units? same visibility filter? 3DGS resets it after each densification.
-  - [ ] Check normalization: does the score scale with Gaussian screen size / opacity?
-        (confounder: large or opaque Gaussians get larger gradients)
-  - [ ] Aggregation across views: mean vs max vs sum — document the choice and its effect.
-  - [ ] Explain the Phase 0 result: measurable response but local geometry got WORSE than
-        random removal (Gain_Dir local CD < 0). See docs/analysis/phase0_analysis.md.
+Training uses footprint visibility and a history of changing model parameters; this
+signal uses contribution > contrib_eps on the frozen model. Same NDC conversion,
+different sampling/filter. Unobserved Gaussians receive zero; inspect counts too.
+Mean of norms is retained as baseline; opacity/footprint/loss are confounders.
+Phase 0 response is measurable, but local geometry becomes worse than random removal.
+See docs/research/QuynhAnh_signal_research.md for interpretation and ablations.
 """
 from __future__ import annotations
 
@@ -21,5 +18,6 @@ import torch
 from .common import SignalContext, view_statistics
 
 
-def compute(ctx: SignalContext) -> torch.Tensor:
-    return view_statistics(ctx)["grad_mean"].float()
+def compute(ctx: SignalContext, contrib_eps: float = 1e-3,
+            lambda_dssim: float = 0.2) -> torch.Tensor:
+    return view_statistics(ctx, contrib_eps, lambda_dssim)["grad_mean"].float()

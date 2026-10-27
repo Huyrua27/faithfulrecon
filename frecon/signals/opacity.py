@@ -2,13 +2,11 @@
 
 score_i = 1 - sigmoid(opacity_logit_i)        (higher = less reliable)
 
-Status: implemented and used in Phase 0.
-TODO(QuynhAnh):
-  - [ ] Verify against the 3DGS definition of opacity (activation, where it is read).
-  - [ ] Document confounders: opacity reset schedule, low-opacity Gaussians that never
-        contribute (Phase 0: removal response at the noise floor, SNR_in ~1.1).
-  - [ ] Decide whether to restrict to Gaussians that contribute in >= 1 view, and document it.
-  - [ ] Unit test in tests/test_signals.py (shape, orientation, no NaN).
+Activated opacity is read from GaussianModel; not alpha after pixel-footprint blending.
+All checkpoint Gaussians are included. Low opacity often means low rendering influence,
+not geometric error. Reset/pruning schedules and the opacity gate in floater labels
+are confounders. Active-only selection is a proposed ablation, not the baseline.
+See docs/research/QuynhAnh_signal_research.md and tests/test_signals.py.
 """
 from __future__ import annotations
 
