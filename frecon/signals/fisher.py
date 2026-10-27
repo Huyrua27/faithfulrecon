@@ -1,23 +1,26 @@
 """FisherRF-style information signal.                            Owner: Phát
 
-Reference: Jiang et al., FisherRF (ECCV 2024). FisherRF uses the diagonal of the Fisher /
-Hessian of the photometric loss over all radiance-field parameters (Laplace approximation).
+Reference: Jiang et al., FisherRF (ECCV 2024), https://arxiv.org/abs/2311.17874.
+This is an adapted per-Gaussian information baseline, not the original EIG/uncertainty map.
+The authors' default uncertainty renderer selects color/SH fields; here we use all 14 STORED
+parameters of this SH-degree-0 model (position, log-scale, quaternion, opacity/color logits).
 
-Planned definition (verify against the paper and document differences):
+Definition:
     score_i = -log( Tr(F_i) + eps )     over all parameters of Gaussian i
     (little information = less reliable)
 
-TODO(Phat):
-  - [ ] which parameters FisherRF includes; per-Gaussian aggregation (trace? sum of diag?)
-  - [ ] diagonal only is enough here: diag(F_i) = E[g_i ** 2] (cheaper than full blocks)
-  - [ ] orientation check + test (contract: shape (N,), float32, finite)
+The trace mixes parameter units and is not invariant to reparameterization. Signals use
+training cameras only. The diagonal estimator avoids full 14x14 blocks.
 """
 from __future__ import annotations
 
 import torch
 
 from .common import SignalContext
+from .second_order import finite_score, fisher_diagonal, positive_scalar
 
 
 def compute(ctx: SignalContext, n_samples: int = 4, eps: float = 1e-12) -> torch.Tensor:
-    raise NotImplementedError("TODO(Phat): FisherRF-style signal")
+    positive_scalar(eps, "eps")
+    information = fisher_diagonal(ctx, tuple(ctx.model.params), n_samples)
+    return finite_score(-(information.double().sum(-1) + eps).log())

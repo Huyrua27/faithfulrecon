@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-27",
+  "archive": "w4-second-order-2026-10-27-official-v.zip",
+  "bytes": 17444643,
+  "sha256": "4b78bafca0453a298637dd72d5ad88c095a197701f2c95e5e3fcd4f6966c27f7",
+  "drive_file_id": "1GRq34RBI9gDKDD0Kf3aM6d5mdXfZNtU6",
+  "drive_file_url": "https://drive.google.com/file/d/1GRq34RBI9gDKDD0Kf3aM6d5mdXfZNtU6/view?usp=drivesdk",
+  "remote_verification": {
+    "method": "rclone check --download",
+    "matching_files": 1,
+    "differences": 0
+  },
+  "provider": "quynhanh",
+  "insufficient_view_fallback": 0.0,
+  "historical_package_preserved": true
+}
