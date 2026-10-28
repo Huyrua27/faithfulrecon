@@ -24,6 +24,10 @@ data/*
 results/**/signal_results*.csv
 results/**/*.npz
 
+# Downloaded archives (Drive exports of runs/ and results/)
+*.zip
+*.crdownload
+
 # OS / editors
 .DS_Store
 Thumbs.db
