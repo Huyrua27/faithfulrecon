@@ -52,8 +52,10 @@ is faithful.
 - `m_i` visibility uses frustum and normal-facing checks without depth occlusion.
 - `check_alignment` reports frustum coverage and does not independently verify scale or pose.
 - `d_i` is distance to sampled reference points rather than an analytic surface.
-- The opacity gate in `f_i` confounds evaluation of an opacity-based signal. `f_i_nogate` awaits
-  data-contract approval and D1 integration.
+- The opacity gate in `f_i` confounds evaluation of an opacity-based signal. In the provisional
+  D1 run, all top-5% opacity-risk selections had opacity below 0.014, so Precision@5% was zero
+  under the `opacity > 0.05` label gate. This result does not by itself show that opacity is
+  unrelated to geometric failure. `f_i_nogate` awaits data-contract approval and D1 integration.
 - Experimental evidence in this report covers synthetic `v8_az360`; Blender/DTU are not validated.
 
 ## Reproduction

@@ -83,6 +83,18 @@ ghi vào archive vì [data contract](../data_format.md) hiện chỉ quy định
 thêm label này cần Huy duyệt contract và Tuấn Khải cập nhật D1. Báo cáo không trình bày kết quả
 D1 cho `f_i_nogate`.
 
+### Hệ quả đối với đánh giá D1
+
+**Quan sát.** Trong kết quả D1 provisional của `v8_az360` seeds 0–2, top 5% Gaussian được
+opacity-risk chọn đều có opacity dưới `0.014`, thấp hơn ngưỡng `0.05` trong định nghĩa `f_i`.
+Do đó Precision@5% của opacity bằng 0 ở cả ba seed. Chi tiết được ghi trong
+[README của D1 provisional](../../results/d1/phase0_provisional_2026-10-17/synthetic/v8_az360/README.md).
+
+**Diễn giải.** Precision@5% bằng 0 chịu ảnh hưởng trực tiếp của opacity gate và không đủ để kết
+luận riêng rằng opacity signal không liên quan đến geometric failure. Kết quả này cần được báo
+cáo cùng định nghĩa label; việc đánh giá biến thể không gate chỉ được thực hiện sau khi
+`f_i_nogate` được duyệt trong data contract và tích hợp vào D1.
+
 ## 4. Reference geometry và hệ tọa độ
 
 Synthetic reference được dựng lại từ toàn bộ scene configuration, gồm object list, số điểm,
