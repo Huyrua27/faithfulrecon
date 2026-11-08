@@ -120,21 +120,27 @@ def resolve_config(run_dir: Path, condition: str, explicit: Path | None) -> Path
 
 
 def validate_condition(scene_cfg: dict, condition: str, config_path: Path) -> dict:
-    """Reject a config whose camera coverage disagrees with vN_azM condition names."""
-    match = re.fullmatch(r"v(?P<views>\d+)_az(?P<azimuth>\d+)", condition)
-    if match is None:
+    """Reject a config whose camera coverage disagrees with the condition name.
+
+    Synthetic scenes use vN_azM (views + azimuth coverage). Dataset scenes (DTU, Blender) use a
+    fixed camera subset, so vN is enough and only the number of training views is checked.
+    """
+    synthetic = scene_cfg.get("type", "synthetic") == "synthetic"
+    match = re.fullmatch(r"v(?P<views>\d+)(?:_az(?P<azimuth>\d+))?", condition)
+    if match is None or (synthetic and match.group("azimuth") is None):
+        expected = "v8_az360" if synthetic else "v8 or v8_az360"
         raise ValueError(
-            f"Cannot verify condition {condition!r}; expected a condition like v8_az360"
+            f"Cannot verify condition {condition!r}; expected a condition like {expected}"
         )
     expected_views = int(match.group("views"))
-    expected_azimuth = float(match.group("azimuth"))
+    expected_azimuth = float(match.group("azimuth")) if match.group("azimuth") else None
     actual_views = int(scene_cfg.get("n_train_views", -1))
     if actual_views != expected_views:
         raise ValueError(
             f"Condition/config mismatch in {config_path}: {condition} encodes "
             f"{expected_views} train views, config has {actual_views}"
         )
-    if scene_cfg.get("type", "synthetic") == "synthetic":
+    if synthetic:
         azimuth_range = scene_cfg.get("train_azim_range", (0.0, 360.0))
         if not isinstance(azimuth_range, (list, tuple)) or len(azimuth_range) != 2:
             raise ValueError(f"Invalid train_azim_range in {config_path}: {azimuth_range!r}")
@@ -147,7 +153,7 @@ def validate_condition(scene_cfg: dict, condition: str, config_path: Path) -> di
     return {"condition": condition, "n_train_views": actual_views,
             "expected_n_train_views": expected_views, "train_azim_range": scene_cfg.get("train_azim_range"),
             "expected_azimuth_coverage_deg": expected_azimuth,
-            "azimuth_validation": "checked" if scene_cfg.get("type", "synthetic") == "synthetic"
+            "azimuth_validation": "checked" if synthetic
             else "not_applicable_to_dataset_camera_subset"}
 
 
@@ -253,6 +259,8 @@ def main(argv: list[str] | None = None) -> dict:
                          min_contrib=args.min_contrib, min_opacity=args.min_opacity)
     m_i = condition_labels(means, ref, train_cams, params)
     f_i = outcome_labels(distance, heldout_contrib, model.opacities.detach(), params)
+    f_i_nogate = outcome_labels(distance, heldout_contrib, model.opacities.detach(), params,
+                                apply_opacity_gate=False)
 
     meta = {
         "scene": scene_name,
@@ -262,7 +270,8 @@ def main(argv: list[str] | None = None) -> dict:
         "n_gaussians": model.n,
     }
     output = run_dir / "geometric_labels.npz"
-    save_labels(output, means.cpu(), distance.cpu(), m_i.cpu(), f_i.cpu(), meta, params)
+    save_labels(output, means.cpu(), distance.cpu(), m_i.cpu(), f_i.cpu(), meta, params,
+                f_nogate=f_i_nogate.cpu())
 
     figure_dir = args.figure_root / condition / f"seed_{seed}"
     figure_dir.mkdir(parents=True, exist_ok=True)
@@ -290,6 +299,8 @@ def main(argv: list[str] | None = None) -> dict:
         "distance_p95": float(np.percentile(dist_np, 95)),
         "n_gaussians": model.n, "m_i_count": int(m_i.sum()), "m_i_fraction": float(m_i.float().mean()),
         "f_i_count": int(f_i.sum()), "f_i_fraction": float(f_i.float().mean()),
+        "f_i_nogate_count": int(f_i_nogate.sum()),
+        "f_i_nogate_fraction": float(f_i_nogate.float().mean()),
         "reference_frustum_check": align_info,
     }
     (run_dir / "label_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

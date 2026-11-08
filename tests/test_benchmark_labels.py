@@ -146,3 +146,27 @@ def test_make_labels_small_scene_end_to_end(tmp_path):
     assert (run_dir / 'geometric_labels.npz').is_file()
     assert (run_dir / 'label_summary.json').is_file()
     assert len(list((figures / 'v2_az360/seed_0').glob('*.png'))) == 4
+
+
+def test_dataset_condition_accepts_view_count_only():
+    cfg = dict(type='dtu', n_train_views=8)
+    assert validate_condition(cfg, 'v8', 'config.yaml')['azimuth_validation'] == 'not_applicable_to_dataset_camera_subset'
+    validate_condition(cfg, 'v8_az360', 'config.yaml')
+    with pytest.raises(ValueError, match='mismatch'):
+        validate_condition(cfg, 'v4', 'config.yaml')
+    with pytest.raises(ValueError, match='Cannot verify'):
+        validate_condition(dict(type='synthetic', n_train_views=8), 'v8', 'config.yaml')
+
+
+def test_labels_file_with_nogate(tmp_path):
+    path = tmp_path / 'geometric_labels.npz'
+    meta = dict(scene='dtu_scan24', condition='v8', seed=0, checkpoint_sha256='a' * 64, n_gaussians=3)
+    save_labels(path, np.zeros((3, 3)), [.01, .10, .2], [False] * 3, [False, True, False], meta,
+                LabelParams(), f_nogate=[False, True, True])
+    with np.load(path, allow_pickle=True) as data:
+        assert data['f_i_nogate'].dtype == np.bool_
+        assert data['f_i_nogate'].tolist() == [False, True, True]
+        assert data['meta'].item()['f_i_nogate_available'] is True
+    with pytest.raises(ValueError, match='subset'):
+        save_labels(path, np.zeros((3, 3)), [.01, .10, .2], [False] * 3, [True, True, False], meta,
+                    LabelParams(), f_nogate=[False, True, True])

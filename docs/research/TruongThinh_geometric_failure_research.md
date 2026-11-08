@@ -269,7 +269,7 @@ Log nằm tại `results/benchmark/v8_az360/logs/benchmark_tests.txt`; môi trư
 | `m_i` chưa depth-occlusion-aware | Có thể đếm điểm bị che khuất là visible | Render depth reference hoặc ray-cast | Chưa triển khai; labels provisional |
 | Alignment check chỉ đo frustum coverage | Không phát hiện sai scale/pose | Thêm landmark, bounding-box và depth diagnostics | Chưa triển khai độc lập |
 | Distance tới sampled points | Sampling density ảnh hưởng `d_i` gần threshold | Tăng density hoặc point-to-mesh; sensitivity study | Chưa chạy sweep |
-| Opacity gate trong `f_i` | Confound khi đánh giá opacity signal | Lưu thêm `f_i_nogate`, đánh giá riêng | Chờ duyệt contract và D1 integration |
+| Opacity gate trong `f_i` | Confound khi đánh giá opacity signal | Lưu thêm `f_i_nogate`, đánh giá riêng | Đã duyệt; `make_labels.py` lưu `f_i_nogate`, `frecon/eval/io.py` đọc được |
 | Phase 0 chỉ có ba seed | Không đủ cho claim thống kê mạnh | Thêm seeds và uncertainty/test phù hợp | Chưa thực hiện |
 | Footprint mask quá rộng | LR image cao cả với random | Dùng blending-weight mask | Đã triển khai trong D2 v2.1 |
 | Local CD gộp accuracy/completeness | Che khuất trade-off | Báo cáo hai thành phần riêng | Đã triển khai trong D2 v2.1 |

@@ -120,25 +120,35 @@ def outcome_labels(distance: torch.Tensor, heldout_contrib: torch.Tensor,
     return label
 
 
-def save_labels(path, xyz, distance, m, f, meta: dict, params: LabelParams):
-    """Write geometric labels using the established archive format."""
+def save_labels(path, xyz, distance, m, f, meta: dict, params: LabelParams, f_nogate=None):
+    """Write geometric labels using the established archive format.
+
+    `f_nogate` (optional) is f_i without the opacity gate; it is stored as `f_i_nogate` so that
+    opacity-based signals can be evaluated against a label that does not depend on opacity.
+    """
     arrays = {
         "xyz": np.asarray(xyz, dtype=np.float32),
         "distance": np.asarray(distance, dtype=np.float32),
         "m_i": np.asarray(m, dtype=bool),
         "f_i": np.asarray(f, dtype=bool),
     }
+    if f_nogate is not None:
+        arrays["f_i_nogate"] = np.asarray(f_nogate, dtype=bool)
+    bool_keys = [k for k in ("m_i", "f_i", "f_i_nogate") if k in arrays]
     n = arrays["xyz"].shape[0]
     if arrays["xyz"].shape != (n, 3) or any(value.shape[0] != n for value in arrays.values()):
         raise ValueError("All label arrays must have the same N; xyz must have shape (N, 3)")
-    if arrays["distance"].shape != (n,) or any(arrays[k].shape != (n,) for k in ("m_i", "f_i")):
-        raise ValueError("distance, m_i, and f_i must have shape (N,)")
+    if arrays["distance"].shape != (n,) or any(arrays[k].shape != (n,) for k in bool_keys):
+        raise ValueError(f"distance and {', '.join(bool_keys)} must have shape (N,)")
+    if f_nogate is not None and (arrays["f_i"] & ~arrays["f_i_nogate"]).any():
+        raise ValueError("f_i must be a subset of f_i_nogate")
     if not np.isfinite(arrays["xyz"]).all() or not np.isfinite(arrays["distance"]).all():
         raise ValueError("Label geometry must be finite")
     metadata = dict(
         meta,
         label_params=asdict(params),
         m_i_available=True,
+        f_i_nogate_available=f_nogate is not None,
         provisional=True,
     )
     arrays["meta"] = np.array(metadata, dtype=object)

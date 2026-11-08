@@ -54,6 +54,7 @@ File này lớn (N × số signal hàng) → để trong `runs/`, **không commi
 | `distance` | (N,) float32 | `d_i`: khoảng cách tới bề mặt tham chiếu |
 | `m_i` | (N,) bool | điều kiện under-observed (chỉ phụ thuộc camera + bề mặt tham chiếu) |
 | `f_i` | (N,) bool | kết cục geometric failure |
+| `f_i_nogate` | (N,) bool, tuỳ chọn | như `f_i` nhưng bỏ điều kiện opacity > `min_opacity`; dùng khi đánh giá tín hiệu opacity (tránh nhãn phụ thuộc vào chính tín hiệu). Có khi `meta.f_i_nogate_available = True` |
 | `meta` | object (dict) | `scene`, `condition`, `seed`, `checkpoint_sha256`, `n_gaussians`, `label_params`, `m_i_available` (bool), `provisional` (bool) |
 
 Nhãn tạm do `prepare_d1_run.py` tạo: `f_i` và `distance` theo code Phase 0

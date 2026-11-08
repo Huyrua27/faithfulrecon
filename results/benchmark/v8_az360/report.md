@@ -55,7 +55,7 @@ is faithful.
 - The opacity gate in `f_i` confounds evaluation of an opacity-based signal. In the provisional
   D1 run, all top-5% opacity-risk selections had opacity below 0.014, so Precision@5% was zero
   under the `opacity > 0.05` label gate. This result does not by itself show that opacity is
-  unrelated to geometric failure. `f_i_nogate` awaits data-contract approval and D1 integration.
+  unrelated to geometric failure. `make_labels.py` now also stores `f_i_nogate` (same label without the opacity gate); the run above predates this change, so its archives contain `f_i` only.
 - Experimental evidence in this report covers synthetic `v8_az360`; Blender/DTU are not validated.
 
 ## Reproduction
