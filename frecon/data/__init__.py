@@ -28,7 +28,8 @@ def load_scene(cfg: dict, rasterize, bg, device):
         from .dtu import load_dtu
         train, test, ref, info = load_dtu(cfg["root"], cfg["n_train_views"], cfg["n_test_views"],
                                           cfg.get("downscale", 4), cfg.get("stl_ply"), cfg.get("ref_cache"),
-                                          cfg.get("min_mask_views", 1), cfg.get("max_ref_points", 200_000))
+                                          cfg.get("min_mask_views", 1), cfg.get("max_ref_points", 200_000),
+                                          cfg.get("photometric"))
         train = [c.to(device) for c in train]
         test = [c.to(device) for c in test]
         return train, test, (None if ref is None else ref.to(device)), dict(info, type="dtu", root=cfg["root"])

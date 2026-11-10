@@ -1,0 +1,164 @@
+% !TEX program = pdflatex
+% ============================================================================
+% Paper A — Method, D2 (intervention response). DRAFT, protocol v2.1.
+% Status: describes the protocol as implemented in scripts/d2_v2.py and
+% scripts/analyze_d2.py (configs/d2v21_*.yaml). No results here.
+%
+% Compiles on its own (pdflatex). To move it into the paper: copy everything
+% between \begin{document} and \end{document}, and move the macros below to
+% the paper's preamble.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+
+\providecommand{\din}{\Delta_{\mathrm{in}}}
+\providecommand{\dout}{\Delta_{\mathrm{out}}}
+\providecommand{\LR}{\mathrm{LR}}
+\providecommand{\Gain}{\mathrm{Gain}}
+\providecommand{\Dir}{\mathrm{Dir}}
+
+\begin{document}
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Intervention response (D2)}
+\label{sec:d2}
+
+D1 asks whether a reliability signal \emph{ranks} the primitives associated with geometric failure
+above the others. A high ranking score does not imply that acting on the selected primitives changes
+the reconstruction in the way the signal suggests. D2 tests this directly: we intervene on the
+primitives a signal selects, let the optimization respond, and compare the response with that of a
+size-matched random selection.
+
+\paragraph{Setup.}
+Let $\mathcal{G}=\{g_i\}_{i=1}^{N}$ be a 3DGS model trained on views $\mathcal{V}_{\mathrm{tr}}$, and
+let $\mathcal{V}_{\mathrm{ho}}$ be held-out views not used in training. A reliability signal assigns a
+score $E_i$ to every primitive; by convention a higher score means \emph{less} reliable. For a
+selection ratio $K$, the signal selects $R_E=\operatorname{top}_K(E)$, the $\lceil KN\rceil$ primitives with the
+highest scores. Each signal is compared with $n_r$ random selections $R^{(j)}_{\mathrm{rand}}$,
+$j=1,\dots,n_r$, of the same size, drawn on the same model.
+
+\paragraph{Intervention and re-optimization.}
+The intervention removes the selected primitives. The remaining model is then re-optimized from the
+trained checkpoint with the same loss and with the optimizer state (Adam moments) of the
+surviving primitives preserved. Densification and opacity reset are disabled and the position
+learning rate is kept at its final value. As a result, no primitive is created or deleted during
+re-optimization, and every surviving primitive can be compared one-to-one across runs. We record the
+model at $T\in\mathcal{T}$ re-optimization steps. The snapshot at $T=0$ isolates the immediate effect
+of the intervention. Later snapshots show how much of that effect the optimization compensates for.
+
+\paragraph{References and noise floor.}
+3DGS optimization is not deterministic: two re-optimizations of the same model with different view
+orders already differ. We therefore run two \emph{null interventions}, i.e.\ re-optimizations without
+removal. $\mathcal{G}^{\mathrm{null}}_a$ uses the same view order as every intervention and serves as
+the paired reference. $\mathcal{G}^{\mathrm{null}}_b$ uses a different view order and gives the noise
+floor. All changes below are measured against $\mathcal{G}^{\mathrm{null}}_a$ \emph{at the same step}
+$T$, and the same quantity measured between $\mathcal{G}^{\mathrm{null}}_b$ and
+$\mathcal{G}^{\mathrm{null}}_a$ is the noise floor. At $T=0$ both references equal the trained model
+and the noise floor is zero.
+
+\paragraph{Region of an intervention.}
+Image-space locality requires a region in which a response is \emph{expected}. A geometric footprint
+of the selected primitives (their projected extent) is too permissive: the footprint of a few percent of
+the primitives covers most of the object, so every selection, random or not, looks local. We instead use
+the share of each pixel's blending weight that the selection carries in the trained model,
+\begin{equation}
+  \omega_v(p) \;=\; \sum_{i\in R} w_{i,v}(p), \qquad
+  w_{i,v}(p) = \alpha_{i,v}(p)\prod_{j\prec i}\bigl(1-\alpha_{j,v}(p)\bigr),
+\end{equation}
+where $\prec$ is front-to-back order along the ray through pixel $p$ of view $v\in\mathcal{V}_{\mathrm{ho}}$.
+The map accounts for occlusion and opacity. It is obtained with one extra rendering pass that uses
+the indicator of $R$ as the per-primitive feature. The region is
+$M_R=\{(v,p):\omega_v(p)\ge\theta_w\}$. Selections differ widely in how much of the image they
+dominate, so when $M_R$ covers less than a fraction $\rho$ of all held-out pixels we grow it with the
+pixels of highest $\omega_v(p)$, up to that fraction. Without this floor, a selection whose region spans
+a few pixels obtains an inflated signal-to-noise ratio simply because noise in a tiny region is small.
+
+\paragraph{D2.1 — Locality.}
+Let $\Delta(v,p)$ be the mean absolute RGB difference between the rendering of the intervened model and
+that of $\mathcal{G}^{\mathrm{null}}_a$. With $\din$ and $\dout$ the mean of $\Delta$ inside and outside
+$M_R$,
+\begin{equation}
+  \LR_{\mathrm{img}}(R) = \frac{\din}{\din+\dout}.
+\end{equation}
+Both terms are per-pixel means, so the ratio does not grow with region size. In 3D, let $\delta_i$ be
+the displacement of the center of a surviving primitive between the intervened model and
+$\mathcal{G}^{\mathrm{null}}_a$. Splitting survivors into those within distance $r$ of a removed
+primitive and the rest gives $\LR_{\mathrm{3D}}$, defined in the same way. Locality alone is not
+evidence that the selection is related to failure: a selection of influential but correct primitives can
+also produce a local response. D2.2 addresses this.
+
+\paragraph{D2.2 — Direction.}
+A signal states that its top-ranked primitives are unreliable, which implies that removing them should
+not degrade the reconstruction more than removing random primitives. Ideally, it should improve it. We
+measure the change, relative to $\mathcal{G}^{\mathrm{null}}_a$, of
+(i) held-out image error ($1-\mathrm{SSIM}$ and $L_1$ on $\mathcal{V}_{\mathrm{ho}}$), and
+(ii) local geometric error with respect to the reference surface $\mathcal{S}$, restricted to the
+neighborhood of radius $r$ around the removed primitives. Local geometric error is split into
+\begin{equation}
+  \mathrm{Acc} = \operatorname*{mean}_{\mu\in\mathcal{M}_{\mathrm{loc}}} d(\mu,\mathcal{S}), \qquad
+  \mathrm{Comp} = \operatorname*{mean}_{s\in\mathcal{S}_{\mathrm{loc}}} d(s,\mathcal{M}),
+\end{equation}
+where $\mathcal{M}$ are the centers of primitives with opacity above $0.1$ and the subscript
+$\mathrm{loc}$ restricts to the neighborhood. Accuracy degrades when erroneous primitives
+(e.g.\ floaters) remain. Completeness degrades when valid surface is removed and leaves holes. The two
+can move in opposite directions under the same intervention, and only their split shows whether a
+selection removed erroneous primitives or valid surface. For each quantity $q$,
+$\Dir_q=-(q_{\mathrm{int}}-q_{\mathrm{null}_a})$, so that positive values mean the intervention improved
+the reconstruction.
+
+\paragraph{D2.3 — Matched contrast.}
+Every quantity is reported as a paired difference with the random selections of the same model,
+\begin{equation}
+  \Gain_X(E) = X(R_E) - \frac{1}{n_r}\sum_{j=1}^{n_r} X\bigl(R^{(j)}_{\mathrm{rand}}\bigr),
+  \qquad X\in\{\LR_{\mathrm{img}},\LR_{\mathrm{3D}},\Dir_{1-\mathrm{SSIM}},\Dir_{\mathrm{Acc}},\Dir_{\mathrm{Comp}}\},
+\end{equation}
+together with the response-to-noise ratio
+$\mathrm{SNR}=\din(\text{intervention vs.\ null}_a)\,/\,\din(\text{null}_b\text{ vs.\ null}_a)$, computed in
+the same region $M_{R_E}$. Positive gains mean the signal's selection is more local, or improves the
+reconstruction more, than random selection.
+
+\paragraph{Outcomes.}
+A signal is \emph{measurable} if its SNR is at least $2$ in every seed at the primary step. Gains of
+signals that are not measurable are not interpreted. Removing primitives that do not contribute to
+the image trivially ``beats'' random removal, which does change the image. For a measurable signal,
+each gain is classified as \emph{expected} if it has the same positive sign in every seed and its mean
+is at least two standard errors from zero, \emph{opposite} under the same condition with a negative
+sign, and \emph{inconsistent} otherwise. This yields three outcomes per signal:
+(i) the selection produces an expected locality gain and at least one expected direction gain, with no
+opposite direction gain, which is evidence consistent with the signal's stated meaning;
+(ii) the signal is not measurable, so its selection has little influence on the reconstruction;
+(iii) at least one direction gain is opposite, so the stated meaning is not supported.
+With the few seeds of the pilot experiments, this rule is a pre-specified heuristic, not a significance
+test. The full study replaces it with paired Wilcoxon signed-rank tests against random selections,
+with Holm--Bonferroni correction across signals (Sec.~\ref{sec:stats}).
+
+These outcomes describe the response to the tested intervention under the stated settings. They do not
+amount to a causal identification of which primitives cause the failure.
+
+\paragraph{Implementation details.}
+We use $K=5\%$, removal as the intervention, $\mathcal{T}=\{0,200,1000\}$ with $T=1000$ as the primary
+step, $n_r=5$ random selections, $\theta_w=0.2$, $\rho=1\%$ of held-out pixels and $r=0.05$ scene
+units. Signals are computed once on the trained model. The rasterizer is a pure-PyTorch
+implementation of the 3DGS forward model (EWA projection with a $0.3$\,px low-pass filter, $3\sigma$
+footprints, front-to-back compositing with $\alpha\le0.99$ and contributions below $1/255$ discarded).
+It enumerates only primitive--pixel pairs with non-negligible opacity, and it matches a dense reference
+implementation to within $10^{-6}$ relative error in both images and gradients. Unlike the CUDA
+rasterizer, it does not terminate rays early and it sorts per pixel rather than per tile.
+% TODO(Huy): runtime per re-optimization (≈3.4 min / 1000 steps, 160 px, ~28k primitives, GTX 1650);
+%            move the rasterizer paragraph to a shared "Implementation" section if D1/D3 use it too.
+% TODO(Huy): opacity scaling and position perturbation as additional interventions (Phase 1).
+
+\subsection{Statistical analysis}
+\label{sec:stats}
+% TODO(Huy): unit of analysis (scene, view configuration, seed); pre-specified primary metrics;
+%            paired Wilcoxon signed-rank vs. random with Holm--Bonferroni; bootstrap 95% CIs.
+\emph{To be written.}
+
+\end{document}

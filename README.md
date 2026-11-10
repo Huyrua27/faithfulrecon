@@ -164,7 +164,8 @@ GO means D2 is measurable, not that any signal is faithful. Details: [docs/phase
 | Benchmark labels | Condition label `m_i` with occlusion-aware visibility; final `f_i`; threshold sweeps | in progress |
 | Signals | Cross-view gradient inconsistency; Fisher / second-order baselines; `s_geom` | in progress |
 | D1 pipeline | AUROC, AUPRC, Spearman, Precision@K, enrichment@K with matched random baselines | in progress |
-| Phase 1 | D1–D3 on several scenes and view settings; all interventions and K values | planned |
+| Phase 2 (D2 extensions) | K sweep (1/2/5/10 %), density-adaptive neighborhood radius, opacity/position interventions, ≥ 6 paired observations per test ([docs/phase2_plan.md](docs/phase2_plan.md)) | planned |
+| Phase 1 | D1–D3 on several scenes and view settings | planned |
 
 ## Repository layout
 

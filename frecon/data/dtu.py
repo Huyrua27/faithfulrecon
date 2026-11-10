@@ -125,10 +125,17 @@ def reference_points(stl_ply: str, scale_mat: np.ndarray, cams, masks, min_mask_
 
 def load_dtu(scan_dir: str, n_train_views: int, n_test_views: int, downscale: int = 4,
              stl_ply: str | None = None, ref_cache: str | None = None, min_mask_views: int = 1,
-             max_ref_points: int = 200_000):
+             max_ref_points: int = 200_000, photometric: dict | None = None):
+    """`photometric` perturbs the TRAINING images only (see photometric.py); held-out views keep
+    the original appearance."""
     cams, masks, scale_mat = load_dtu_views(scan_dir, downscale)
     tr, te = split_views(cams, n_train_views, n_test_views)
     ref = None
     if stl_ply or (ref_cache and Path(ref_cache).exists()):
         ref = reference_points(stl_ply, scale_mat, cams, masks, min_mask_views, max_ref_points, ref_cache)
-    return [cams[i] for i in tr], [cams[i] for i in te], ref, {"train_idx": tr, "test_idx": te}
+    train = [cams[i] for i in tr]
+    info = {"train_idx": tr, "test_idx": te}
+    if photometric:
+        from .photometric import perturb_views
+        train, info["photometric"] = perturb_views(train, [masks[i] for i in tr], photometric)
+    return train, [cams[i] for i in te], ref, info
