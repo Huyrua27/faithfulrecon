@@ -144,11 +144,11 @@ không cục bộ / ngược chiều (D2)? Phát chuẩn bị bảng ghép D1–
 
 ## 5. Tiêu chí hoàn thành
 
-- [ ] Estimator Fisher khớp Jacobian chính xác trên cảnh nhỏ (có test).
-- [ ] `fisher`, `pup`, `curvature`, `s_geom` đúng hợp đồng output, có test.
-- [ ] Ghi rõ chỗ khác paper gốc (FisherRF, PUP).
+- [x] Estimator Fisher khớp Jacobian chính xác trên cảnh nhỏ (có test).
+- [x] `fisher`, `pup`, `curvature`, `s_geom` đúng hợp đồng output, có test.
+- [x] Ghi rõ chỗ khác paper gốc (FisherRF, PUP).
 - [ ] D3 chạy một lệnh, ra `d3_metrics.csv` + hình, có random baseline.
 - [ ] Bảng ghép D1–D2–D3.
-- [ ] Tài liệu research + lệnh tái lập.
+- [ ] Tài liệu research + lệnh tái lập. (W3/W4 đã có; phần D3 còn chưa hoàn tất.)
 
 Quy trình git, commit, Definition of Done, mẫu báo cáo: như 3 bạn còn lại (`CONTRIBUTING.md`).

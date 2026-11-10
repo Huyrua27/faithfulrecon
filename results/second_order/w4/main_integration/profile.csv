@@ -1,0 +1,4 @@
+seed,n_gaussians,train_views,resolution,n_samples,bundle_seconds,peak_allocated_bytes,peak_reserved_bytes,gpu
+0,27733,8,160,16,4.8763887000004615,371345920,723517440,NVIDIA GeForce RTX 4060 Laptop GPU
+1,27984,8,160,16,3.8292813999996724,375025152,744488960,NVIDIA GeForce RTX 4060 Laptop GPU
+2,28691,8,160,16,4.026338699999542,391411712,746586112,NVIDIA GeForce RTX 4060 Laptop GPU
