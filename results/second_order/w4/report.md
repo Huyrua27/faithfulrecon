@@ -1,16 +1,12 @@
-# W4 second-order signals: implementation and checkpoint handoff
+# W4 second-order signals: implementation and checkpoint export
 
-**Current PR evidence:** `main_integration/` records the refreshed official-v exports
-after merging main `02a1536`. The full suite is **132 passed, 7 skipped**; the merged
-D1 pipeline accepts all three runs (30 rows). See
-`docs/analysis/Phat_W4_PR_review_2026-10-27.md` for the provider change and final review.
-The original numerical experiments below remain versioned historical evidence.
-
-**27 October delivery update:** a portable package is verified on the shared Drive
-and passes the unmodified D1 consumer at `e4ba397` (30 rows, checkpoint hashes verified).
-The full suite now reports **54 passed, 14 skipped**. GTX 1650 profiling was explicitly
-deferred by the user. See `docs/analysis/Phat_W4_handoff_2026-10-27.md` and `handoff/`.
-The measurements below retain their original 23 October provenance.
+**Status (27 October 2026):** all signals use Quỳnh Anh's official gradient-inconsistency v
+(provider `quynhanh`, zero insufficient-view fallback) after merging main `02a1536`.
+The three synthetic checkpoints were re-exported and pass the merged D1 pipeline
+(`scripts/run_d1.py`, 30 metric rows, checkpoint hashes verified). Full suite at that
+commit: **132 passed, 7 skipped**. Current evidence: `main_integration/`.
+Earlier temporary-v exports and the Drive handoff package are kept only in the Git history
+of this branch. GTX 1650 profiling was deferred.
 
 | Field | Value |
 |---|---|
@@ -42,7 +38,7 @@ checkpoint row order; four baseline score arrays exactly match `signals.pt` and
 remain unchanged after merging. Recomputed reference distances agree at
 `rtol=1e-5, atol=1e-6`; provisional floater labels agree exactly. Maximum source-metric
 differences: L1 1.41e-7, DSSIM 1.04e-6, PSNR 4.55e-5 dB. See
-`checkpoints/source_audit.csv` for individual values.
+`main_integration/source_audit.csv` for individual values.
 
 Each `runs/d1/synthetic/v8_az360/seed_{0,1,2}/scores.npz` contains:
 
@@ -59,15 +55,15 @@ its original SHA256 and count. The actual arrays/checkpoints are ignored by Git.
 
 W3 exact-image-Jacobian validation is in `../report.md`. W4 adds a diagonal all-parameter
 trace estimator for Fisher, activated-scale 6x6 log-determinants for PUP, inverse
-position-block trace for curvature, and product/rank-sum combinations with temporary v.
+position-block trace for curvature, and product/rank-sum combinations with v.
 These are documented paper adaptations, not reproductions of the authors' CUDA kernels.
 
 The handoff uses **S=16**, PUP/curvature `eps=1e-8`, Fisher `eps=1e-12`, v `delta=1e-12`,
 `n_min=2`, and PUP activated-scale basis. v uses contributing training views and
 population variance of position loss gradients. Fewer than two eligible views
-receive v=1 (unknown): 666 / 800 / 638 Gaussians in the three runs. These choices
-are exported in `checkpoints/seed_*_options.json`; the shared v implementation is
-still a stub, so the recorded provider is `temporary_phat`.
+received v=1 (unknown) under the earlier temporary v: 666 / 800 / 638 Gaussians. With the
+official v (provider `quynhanh`) the fallback count is zero. Settings per seed are in
+`main_integration/seed_*_options.json`.
 
 Sample/damping stability uses an **approximate S=256, probe-seed-0 reference**, not
 an exact production Jacobian. Checkpoint 0 is fixed; three probe seeds and
@@ -90,7 +86,7 @@ for PUP, 0.99852→0.99852 for curvature and 0.99854→0.99803 for the product. 
 separate epsilon stays fixed. v has no S/epsilon dependence; repeated CUDA passes
 show tiny ranking differences (rho approximately 0.99997), consistent with renderer
 floating-point reduction variability. Identical probe seeds do not guarantee
-bitwise identical CUDA rendering. Detailed rows/plot are in `checkpoint_stability/`.
+bitwise identical CUDA rendering. Detailed rows/plot are in `main_integration/stability/`.
 
 The separate **constructed, untrained** 20-Gaussian fixture in `stability.csv/.png`
 is a numerical diagnostic only. Its target images are 0.95 times its own renders;
@@ -129,15 +125,17 @@ replace Tuấn Khải's D1 protocol and does not implement D3.
 | gradmag | 0.6536 ± 0.0104 |
 | visibility | 0.3550 ± 0.0116 |
 | fisher | 0.2984 ± 0.0087 |
-| pup | 0.3069 ± 0.0178 |
+| pup | 0.3069 ± 0.0179 |
 | curvature | 0.3406 ± 0.0157 |
-| temporary gradient_inconsistency | 0.6514 ± 0.0240 |
-| s_geom | 0.3779 ± 0.0123 |
-| s_geom_ranksum | 0.4886 ± 0.0076 |
+| gradient_inconsistency (official v) | 0.6507 ± 0.0250 |
+| s_geom | 0.3934 ± 0.0027 |
+| s_geom_ranksum | 0.4880 ± 0.0087 |
+
+Values from `main_integration/scores_summary.csv`.
 
 **Observation:** all arrays satisfy the contract; information/curvature/product
 scores have AUROC below 0.5, despite high numerical rank stability on checkpoint 0.
-The temporary v is comparable to GradMag in this small diagnostic.
+v is comparable to GradMag in this small diagnostic.
 
 **Interpretation:** numerical correctness/stability does not establish failure
 prediction. Weakly observed Gaussians are uncertain, while the label requires
@@ -156,17 +154,17 @@ rclone check gdrive: runs/drive_source/data --drive-root-folder-id 1XuBXSTEBo3JW
 $env:OMP_NUM_THREADS='1'
 $env:MKL_NUM_THREADS='1'
 $env:MKL_THREADING_LAYER='SEQUENTIAL'
-& 'C:/Users/phatl/anaconda3/python.exe' -m pytest -q
-& 'C:/Users/phatl/anaconda3/python.exe' scripts/validate_second_order_checkpoints.py
-& 'C:/Users/phatl/anaconda3/python.exe' scripts/validate_second_order_signals.py --out_dir results/second_order/w4/checkpoint_stability --run_dir runs/d1/synthetic/v8_az360/seed_0 --checkpoint runs/drive_source/data/seed_0/base.pt
+python -m pytest -q
+python scripts/validate_second_order_checkpoints.py
+python scripts/validate_second_order_signals.py --out_dir results/second_order/w4/main_integration/stability --run_dir runs/d1/synthetic/v8_az360/seed_0 --checkpoint runs/drive_source/data/seed_0/base.pt
 ```
 
 For an existing export, the audit/export command requires explicit `--overwrite`
 to replace the same six signals; existing baselines remain preserved. Standalone export:
 
 ```powershell
-& 'C:/Users/phatl/anaconda3/python.exe' scripts/export_second_order.py --run_dir runs/d1/synthetic/v8_az360/seed_0 --checkpoint runs/drive_source/data/seed_0/base.pt --config results/phase0/config_used.yaml --n_samples 16
-& 'C:/Users/phatl/anaconda3/python.exe' scripts/validate_second_order_signals.py --out_dir results/second_order/w4 --profile_n 28000
+python scripts/export_second_order.py --run_dir runs/d1/synthetic/v8_az360/seed_0 --checkpoint runs/drive_source/data/seed_0/base.pt --config results/phase0/config_used.yaml --n_samples 16
+python scripts/validate_second_order_signals.py --out_dir results/second_order/w4 --profile_n 28000
 ```
 
 The full suite reports **49 passed, 14 skipped** in the stated environment.
@@ -177,9 +175,11 @@ D3 and other-track tasks plus the optional gsplat backend; they are not completi
 
 ## Remaining acceptance and next action
 
-Review/distribute the three score archives with options/hashes to the D1/D2 owners;
-agree on the temporary v convention and complete GTX 1650 profiling. W5 compares
-u/v/product/rank-sum, visibility strata and scale basis, then freezes settings for
-Huy's D2 integration. D3 error attribution, Spearman/AUSE/random baselines and the
-joint D1–D2–D3 table remain future milestones. See
-`docs/analysis/Phat_W3_W4_status_2026-10-23.md` for the delivery plan.
+- Re-evaluate fisher / pup / curvature against distance-based labels (d > 0.03, d > 0.1):
+  the provisional `f_i` requires held-out contribution and opacity, which excludes weakly
+  observed Gaussians by construction and may explain AUROC < 0.5.
+- Report how many Gaussians have F = 0 (seen by no view); they tie at the top of the
+  curvature ranking and would dominate a top-5% removal.
+- Use one `n_samples` value (16) in both `REGISTRY` and the export, then write the signals to
+  `signals.pt` so D2 can use them.
+- D3 remains a future milestone.

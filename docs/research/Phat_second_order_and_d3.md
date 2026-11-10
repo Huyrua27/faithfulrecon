@@ -7,8 +7,7 @@ Quỳnh Anh's official v and Tuấn Khải's D1. W4 now delegates to that v impl
 records its zero fallback/counts; the earlier temporary-v package remains a historical
 artifact. All three checkpoints are re-exported and pass the merged D1 pipeline.
 Full suite: 132 passed, 7 skipped. Current evidence is in
-`results/second_order/w4/main_integration/`; review:
-`docs/analysis/Phat_W4_PR_review_2026-10-27.md`.
+`results/second_order/w4/main_integration/`.
 GTX 1650 measurement remains user-deferred. Scientific reviewer acceptance is open;
 D3 remains scheduled for W6–W7.
 
@@ -109,7 +108,7 @@ python -m pytest tests/test_second_order.py -q
 python -m tests.test_second_order --out_dir results/second_order
 ```
 
-The verified interpreter is `C:/Users/phatl/anaconda3/python.exe` (Python 3.12.7,
+The verified interpreter is a local Anaconda install (Python 3.12.7,
 PyTorch 2.8.0+cu129). The convergence table is a CPU, one-thread result; CUDA smoke
 validation passed separately. Full-scene/GTX 1650 runtime and memory remain W4 work.
 

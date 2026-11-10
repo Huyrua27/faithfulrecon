@@ -16,7 +16,7 @@ câu hỏi cần thảo luận. Ngắn gọn, có link tới commit / file / log
   `runs/pr_review/d1`, giữ baseline; D1 trên main chạy 30 rows và xác minh hash checkpoint.
 - Package official-v và evidence mới được tách khỏi package temporary-v cũ để giữ
   provenance. Không diễn giải AUROC thấp thành lỗi estimator hoặc tự đảo hướng score.
-- Evaluation cuối: `docs/analysis/Phat_W4_PR_review_2026-10-27.md`.
+- Kết quả cuối: `results/second_order/w4/report.md` và `results/second_order/w4/main_integration/`.
   GTX 1650 tiếp tục là task user-deferred; D3 vẫn ngoài scope PR W4.
 
 ## 2026-10-27
@@ -30,7 +30,7 @@ câu hỏi cần thảo luận. Ngắn gọn, có link tới commit / file / log
   AUROC khớp diagnostic trước đó, input files không đổi.
 - **Delivery:** upload ZIP vào folder W4 mới bên trong data Drive của team. Đọc
   metadata lại và `rclone check --download`: 1 file khớp, 0 differences. Receipt,
-  manifest và consumer evidence nằm ở `results/second_order/w4/handoff/`.
+  manifest và consumer evidence (file đã gỡ khỏi repo khi merge PR #5; xem lịch sử Git của nhánh `feature/phat-second-order`).
 - **Test:** full suite 54 passed, 14 skipped, gồm 5 test mới cho portable package:
   relocation/source preservation, corruption, row order, unavailable m_i và baseline.
   Snapshot consumer được giữ trong thư mục ẩn để pytest không collect nhầm tests.
@@ -38,7 +38,7 @@ câu hỏi cần thảo luận. Ngắn gọn, có link tới commit / file / log
   không thay bằng số liệu RTX 4060. Convention v tạm vẫn cần Huy/Quỳnh Anh review.
 - **Git:** refresh main vẫn tại `3aef207`; nộp code/docs/evidence trên
   `feature/phat-second-order`, không đưa checkpoint/NPZ/package vào Git.
-- **Tài liệu handoff:** `docs/analysis/Phat_W4_handoff_2026-10-27.md`.
+- **Tài liệu handoff:** `docs/analysis/Phat_W4_handoff_2026-10-27.md` (file đã gỡ khỏi repo khi merge PR #5; xem lịch sử Git của nhánh `feature/phat-second-order`).
 
 ## 2026-10-23
 
@@ -80,7 +80,7 @@ câu hỏi cần thảo luận. Ngắn gọn, có link tới commit / file / log
 - **Assumption:** SignalContext gắn với checkpoint/camera/backend không thay đổi;
   cache không tự phát hiện thay đổi model. Block dùng log-scale gốc, chưa damping.
 - **Môi trường:** PATH hiện trỏ tới Python 3.14/PyTorch CPU; dùng
-  `C:/Users/phatl/anaconda3/python.exe` (3.12.7, torch 2.8.0+cu129) để kiểm chứng.
+  Python Anaconda (3.12.7, torch 2.8.0+cu129) để kiểm chứng.
 - **Thử nhưng không được:** `git fetch --no-tags origin` không kết nối được GitHub
   cổng 443; branch dựa trên local `main`, chưa xác nhận remote mới hơn ở lần này.
 - **Tiếp theo:** W4: `fisher`, `pup`, `curvature`; quyết định basis scale/log-scale

@@ -1,8 +1,8 @@
 # Phát: W3–W4 delivery status and next objectives
 
-**27 October handoff update:** see `docs/analysis/Phat_W4_handoff_2026-10-27.md`
-for the portable Drive package, completed D1 consumer check, and user-deferred
-GTX 1650 task. The status below is the 23 October snapshot.
+**27 October update:** the portable Drive package and D1 consumer check are summarized in
+`docs/notes/Phat_notes.md` (handoff files are in the Git history of `feature/phat-second-order`).
+GTX 1650 profiling was deferred. The status below is the 23 October snapshot.
 
 Updated 23 October 2026 against `origin/main` at `3aef207` on
 `feature/phat-second-order`. The earlier 13 October plan is retained as a dated
