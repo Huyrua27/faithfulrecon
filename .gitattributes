@@ -1,0 +1,14 @@
+# Store text files with LF in the repository on every OS (Windows checkouts may still show CRLF).
+# Shell scripts must stay LF: CRLF breaks them on Colab/Linux.
+* text=auto eol=lf
+*.sh  text eol=lf
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.npz binary
+*.npy binary
+*.pt  binary
+*.ply binary
+*.zip binary

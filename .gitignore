@@ -24,6 +24,10 @@ data/*
 results/**/signal_results*.csv
 results/**/*.npz
 
+# Downloaded archives (Drive exports of runs/ and results/)
+*.zip
+*.crdownload
+
 # Full signal figures are generated under runs/signals/figures/.
 # Commit only these eight representative seed-0 / Top-5% figures.
 results/signals/**/*.png

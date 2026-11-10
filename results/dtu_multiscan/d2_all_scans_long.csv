@@ -1,0 +1,337 @@
+scan,step,signal,metric,mean,std,cls
+24,0,opacity,Gain_LR image (region mask),0.058,0.004,E
+24,0,opacity,Gain_Dir held-out 1−SSIM,4.745,0.414,E
+24,0,opacity,Gain_Dir local accuracy,-0.959,0.281,O
+24,0,opacity,Gain_Dir local completeness,0.212,0.018,E
+24,0,gradmag,Gain_LR image (region mask),0.015,0.007,E
+24,0,gradmag,Gain_Dir held-out 1−SSIM,-20.036,2.547,O
+24,0,gradmag,Gain_Dir local accuracy,7.149,3.381,E
+24,0,gradmag,Gain_Dir local completeness,-0.343,0.128,O
+24,0,visibility,Gain_LR image (region mask),0.082,0.004,E
+24,0,visibility,Gain_Dir held-out 1−SSIM,5.299,0.444,E
+24,0,visibility,Gain_Dir local accuracy,8.54,1.479,E
+24,0,visibility,Gain_Dir local completeness,0.212,0.018,E
+24,200,opacity,Gain_LR image (region mask),-0.05,0.019,O
+24,200,opacity,Gain_LR 3D displacement,0.038,0.008,E
+24,200,opacity,Gain_Dir held-out 1−SSIM,-1.02,0.21,O
+24,200,opacity,Gain_Dir local accuracy,-0.389,0.231,·
+24,200,opacity,Gain_Dir local completeness,0.172,0.028,E
+24,200,gradmag,Gain_LR image (region mask),-0.025,0.02,O
+24,200,gradmag,Gain_LR 3D displacement,0.081,0.017,E
+24,200,gradmag,Gain_Dir held-out 1−SSIM,1.503,0.84,E
+24,200,gradmag,Gain_Dir local accuracy,7.227,1.038,E
+24,200,gradmag,Gain_Dir local completeness,-0.146,0.083,O
+24,200,visibility,Gain_LR image (region mask),0.12,0.021,E
+24,200,visibility,Gain_LR 3D displacement,0.118,0.01,E
+24,200,visibility,Gain_Dir held-out 1−SSIM,-0.569,0.22,O
+24,200,visibility,Gain_Dir local accuracy,5.657,0.951,E
+24,200,visibility,Gain_Dir local completeness,0.168,0.019,E
+24,1000,opacity,Gain_LR image (region mask),-0.068,0.022,O
+24,1000,opacity,Gain_LR 3D displacement,0.047,0.011,E
+24,1000,opacity,Gain_Dir held-out 1−SSIM,-0.796,0.178,O
+24,1000,opacity,Gain_Dir local accuracy,-0.372,0.361,·
+24,1000,opacity,Gain_Dir local completeness,0.147,0.023,E
+24,1000,gradmag,Gain_LR image (region mask),-0.017,0.02,·
+24,1000,gradmag,Gain_LR 3D displacement,0.059,0.015,E
+24,1000,gradmag,Gain_Dir held-out 1−SSIM,0.744,0.609,·
+24,1000,gradmag,Gain_Dir local accuracy,5.004,1.094,E
+24,1000,gradmag,Gain_Dir local completeness,-0.146,0.088,O
+24,1000,visibility,Gain_LR image (region mask),0.128,0.027,E
+24,1000,visibility,Gain_LR 3D displacement,0.098,0.011,E
+24,1000,visibility,Gain_Dir held-out 1−SSIM,-0.387,0.237,O
+24,1000,visibility,Gain_Dir local accuracy,5.62,0.916,E
+24,1000,visibility,Gain_Dir local completeness,0.14,0.017,E
+37,0,opacity,Gain_LR image (region mask),0.03,0.002,E
+37,0,opacity,Gain_Dir held-out 1−SSIM,3.305,0.256,E
+37,0,opacity,Gain_Dir local accuracy,-0.075,0.136,·
+37,0,opacity,Gain_Dir local completeness,0.18,0.024,E
+37,0,gradmag,Gain_LR image (region mask),-0.006,0.01,·
+37,0,gradmag,Gain_Dir held-out 1−SSIM,-7.724,3.033,O
+37,0,gradmag,Gain_Dir local accuracy,10.548,7.136,E
+37,0,gradmag,Gain_Dir local completeness,-0.317,0.143,O
+37,0,visibility,Gain_LR image (region mask),0.045,0.002,E
+37,0,visibility,Gain_Dir held-out 1−SSIM,3.483,0.273,E
+37,0,visibility,Gain_Dir local accuracy,3.884,1.301,E
+37,0,visibility,Gain_Dir local completeness,0.179,0.025,E
+37,200,opacity,Gain_LR image (region mask),-0.06,0.033,O
+37,200,opacity,Gain_LR 3D displacement,0.036,0.016,E
+37,200,opacity,Gain_Dir held-out 1−SSIM,-0.427,0.158,O
+37,200,opacity,Gain_Dir local accuracy,-0.152,1.152,·
+37,200,opacity,Gain_Dir local completeness,0.116,0.022,E
+37,200,gradmag,Gain_LR image (region mask),-0.043,0.017,O
+37,200,gradmag,Gain_LR 3D displacement,0.089,0.024,E
+37,200,gradmag,Gain_Dir held-out 1−SSIM,0.64,0.806,·
+37,200,gradmag,Gain_Dir local accuracy,3.039,4.344,·
+37,200,gradmag,Gain_Dir local completeness,-0.218,0.131,O
+37,200,visibility,Gain_LR image (region mask),0.055,0.007,E
+37,200,visibility,Gain_LR 3D displacement,0.087,0.05,·
+37,200,visibility,Gain_Dir held-out 1−SSIM,-0.301,0.113,O
+37,200,visibility,Gain_Dir local accuracy,2.721,1.251,E
+37,200,visibility,Gain_Dir local completeness,0.114,0.014,E
+37,1000,opacity,Gain_LR image (region mask),-0.084,0.038,O
+37,1000,opacity,Gain_LR 3D displacement,0.073,0.013,E
+37,1000,opacity,Gain_Dir held-out 1−SSIM,-0.379,0.083,O
+37,1000,opacity,Gain_Dir local accuracy,0.069,0.479,·
+37,1000,opacity,Gain_Dir local completeness,0.111,0.038,E
+37,1000,gradmag,Gain_LR image (region mask),-0.042,0.02,O
+37,1000,gradmag,Gain_LR 3D displacement,0.077,0.022,E
+37,1000,gradmag,Gain_Dir held-out 1−SSIM,0.597,0.606,·
+37,1000,gradmag,Gain_Dir local accuracy,2.278,3.936,·
+37,1000,gradmag,Gain_Dir local completeness,-0.187,0.112,O
+37,1000,visibility,Gain_LR image (region mask),0.055,0.012,E
+37,1000,visibility,Gain_LR 3D displacement,0.105,0.027,E
+37,1000,visibility,Gain_Dir held-out 1−SSIM,-0.263,0.082,O
+37,1000,visibility,Gain_Dir local accuracy,3.029,0.915,E
+37,1000,visibility,Gain_Dir local completeness,0.102,0.022,E
+40,0,opacity,Gain_LR image (region mask),0.04,0.008,E
+40,0,opacity,Gain_Dir held-out 1−SSIM,7.531,0.659,E
+40,0,opacity,Gain_Dir local accuracy,-0.068,0.205,·
+40,0,opacity,Gain_Dir local completeness,0.244,0.008,E
+40,0,gradmag,Gain_LR image (region mask),-0.014,0.013,·
+40,0,gradmag,Gain_Dir held-out 1−SSIM,-17.166,4.234,O
+40,0,gradmag,Gain_Dir local accuracy,8.695,3.332,E
+40,0,gradmag,Gain_Dir local completeness,-0.151,0.085,O
+40,0,visibility,Gain_LR image (region mask),0.063,0.006,E
+40,0,visibility,Gain_Dir held-out 1−SSIM,8.168,0.616,E
+40,0,visibility,Gain_Dir local accuracy,6.472,1.098,E
+40,0,visibility,Gain_Dir local completeness,0.244,0.008,E
+40,200,opacity,Gain_LR image (region mask),-0.062,0.04,·
+40,200,opacity,Gain_LR 3D displacement,0.1,0.016,E
+40,200,opacity,Gain_Dir held-out 1−SSIM,-1.371,0.167,O
+40,200,opacity,Gain_Dir local accuracy,0.183,0.286,·
+40,200,opacity,Gain_Dir local completeness,0.204,0.021,E
+40,200,gradmag,Gain_LR image (region mask),-0.049,0.04,·
+40,200,gradmag,Gain_LR 3D displacement,0.063,0.021,E
+40,200,gradmag,Gain_Dir held-out 1−SSIM,2.513,1.437,E
+40,200,gradmag,Gain_Dir local accuracy,4.166,1.76,E
+40,200,gradmag,Gain_Dir local completeness,-0.113,0.064,O
+40,200,visibility,Gain_LR image (region mask),0.095,0.012,E
+40,200,visibility,Gain_LR 3D displacement,0.122,0.01,E
+40,200,visibility,Gain_Dir held-out 1−SSIM,-0.804,0.183,O
+40,200,visibility,Gain_Dir local accuracy,4.125,0.692,E
+40,200,visibility,Gain_Dir local completeness,0.202,0.018,E
+40,1000,opacity,Gain_LR image (region mask),-0.121,0.047,O
+40,1000,opacity,Gain_LR 3D displacement,0.09,0.011,E
+40,1000,opacity,Gain_Dir held-out 1−SSIM,-0.899,0.252,O
+40,1000,opacity,Gain_Dir local accuracy,0.431,0.383,E
+40,1000,opacity,Gain_Dir local completeness,0.19,0.017,E
+40,1000,gradmag,Gain_LR image (region mask),-0.042,0.041,·
+40,1000,gradmag,Gain_LR 3D displacement,0.054,0.017,E
+40,1000,gradmag,Gain_Dir held-out 1−SSIM,1.579,1.103,E
+40,1000,gradmag,Gain_Dir local accuracy,3.409,1.807,E
+40,1000,gradmag,Gain_Dir local completeness,-0.088,0.076,·
+40,1000,visibility,Gain_LR image (region mask),0.1,0.017,E
+40,1000,visibility,Gain_LR 3D displacement,0.112,0.009,E
+40,1000,visibility,Gain_Dir held-out 1−SSIM,-0.528,0.248,O
+40,1000,visibility,Gain_Dir local accuracy,4.027,0.484,E
+40,1000,visibility,Gain_Dir local completeness,0.194,0.02,E
+55,0,opacity,Gain_LR image (region mask),0.024,0.007,E
+55,0,opacity,Gain_Dir held-out 1−SSIM,5.327,0.427,E
+55,0,opacity,Gain_Dir local accuracy,-0.089,0.101,·
+55,0,opacity,Gain_Dir local completeness,0.109,0.011,E
+55,0,gradmag,Gain_LR image (region mask),-0.003,0.007,·
+55,0,gradmag,Gain_Dir held-out 1−SSIM,-28.755,4.261,O
+55,0,gradmag,Gain_Dir local accuracy,2.592,3.571,·
+55,0,gradmag,Gain_Dir local completeness,-0.27,0.048,O
+55,0,visibility,Gain_LR image (region mask),0.037,0.003,E
+55,0,visibility,Gain_Dir held-out 1−SSIM,6.642,0.247,E
+55,0,visibility,Gain_Dir local accuracy,7.978,0.75,E
+55,0,visibility,Gain_Dir local completeness,0.109,0.011,E
+55,200,opacity,Gain_LR image (region mask),-0.071,0.033,O
+55,200,opacity,Gain_LR 3D displacement,0.052,0.022,E
+55,200,opacity,Gain_Dir held-out 1−SSIM,-0.47,0.214,O
+55,200,opacity,Gain_Dir local accuracy,-0.014,0.274,·
+55,200,opacity,Gain_Dir local completeness,0.068,0.013,E
+55,200,gradmag,Gain_LR image (region mask),-0.048,0.026,O
+55,200,gradmag,Gain_LR 3D displacement,0.123,0.017,E
+55,200,gradmag,Gain_Dir held-out 1−SSIM,0.673,1.163,·
+55,200,gradmag,Gain_Dir local accuracy,4.067,1.655,E
+55,200,gradmag,Gain_Dir local completeness,-0.119,0.031,O
+55,200,visibility,Gain_LR image (region mask),0.073,0.013,E
+55,200,visibility,Gain_LR 3D displacement,0.051,0.015,E
+55,200,visibility,Gain_Dir held-out 1−SSIM,0.374,0.206,E
+55,200,visibility,Gain_Dir local accuracy,4.245,0.954,E
+55,200,visibility,Gain_Dir local completeness,0.064,0.012,E
+55,1000,opacity,Gain_LR image (region mask),-0.112,0.055,O
+55,1000,opacity,Gain_LR 3D displacement,0.074,0.022,E
+55,1000,opacity,Gain_Dir held-out 1−SSIM,-0.411,0.203,O
+55,1000,opacity,Gain_Dir local accuracy,0.359,0.39,·
+55,1000,opacity,Gain_Dir local completeness,0.06,0.014,E
+55,1000,gradmag,Gain_LR image (region mask),-0.041,0.022,·
+55,1000,gradmag,Gain_LR 3D displacement,0.091,0.017,E
+55,1000,gradmag,Gain_Dir held-out 1−SSIM,0.7,1.215,·
+55,1000,gradmag,Gain_Dir local accuracy,1.278,1.1,·
+55,1000,gradmag,Gain_Dir local completeness,-0.097,0.032,O
+55,1000,visibility,Gain_LR image (region mask),0.089,0.018,E
+55,1000,visibility,Gain_LR 3D displacement,0.038,0.019,E
+55,1000,visibility,Gain_Dir held-out 1−SSIM,0.451,0.305,E
+55,1000,visibility,Gain_Dir local accuracy,4.288,0.749,E
+55,1000,visibility,Gain_Dir local completeness,0.059,0.015,E
+63,0,opacity,Gain_LR image (region mask),0.033,0.003,E
+63,0,opacity,Gain_Dir held-out 1−SSIM,4.263,0.223,E
+63,0,opacity,Gain_Dir local accuracy,-2.092,0.214,O
+63,0,opacity,Gain_Dir local completeness,0.468,0.05,E
+63,0,gradmag,Gain_LR image (region mask),0.008,0.001,E
+63,0,gradmag,Gain_Dir held-out 1−SSIM,-5.008,0.465,O
+63,0,gradmag,Gain_Dir local accuracy,-0.432,1.72,·
+63,0,gradmag,Gain_Dir local completeness,-0.8,0.243,O
+63,0,visibility,Gain_LR image (region mask),0.046,0.002,E
+63,0,visibility,Gain_Dir held-out 1−SSIM,5.991,1.748,E
+63,0,visibility,Gain_Dir local accuracy,13.23,10.348,E
+63,0,visibility,Gain_Dir local completeness,0.438,0.052,E
+63,200,opacity,Gain_LR image (region mask),-0.059,0.013,O
+63,200,opacity,Gain_LR 3D displacement,0.1,0.022,E
+63,200,opacity,Gain_Dir held-out 1−SSIM,-0.286,0.104,O
+63,200,opacity,Gain_Dir local accuracy,-2.129,0.219,O
+63,200,opacity,Gain_Dir local completeness,0.347,0.113,E
+63,200,gradmag,Gain_LR image (region mask),-0.006,0.007,·
+63,200,gradmag,Gain_LR 3D displacement,0.14,0.012,E
+63,200,gradmag,Gain_Dir held-out 1−SSIM,-0.313,0.314,·
+63,200,gradmag,Gain_Dir local accuracy,0.18,1.585,·
+63,200,gradmag,Gain_Dir local completeness,-0.636,0.219,O
+63,200,visibility,Gain_LR image (region mask),0.073,0.006,E
+63,200,visibility,Gain_LR 3D displacement,0.02,0.022,E
+63,200,visibility,Gain_Dir held-out 1−SSIM,1.313,1.611,·
+63,200,visibility,Gain_Dir local accuracy,12.937,10.452,E
+63,200,visibility,Gain_Dir local completeness,0.315,0.125,E
+63,1000,opacity,Gain_LR image (region mask),-0.081,0.022,O
+63,1000,opacity,Gain_LR 3D displacement,0.108,0.021,E
+63,1000,opacity,Gain_Dir held-out 1−SSIM,-0.28,0.108,O
+63,1000,opacity,Gain_Dir local accuracy,-2.258,0.164,O
+63,1000,opacity,Gain_Dir local completeness,0.297,0.076,E
+63,1000,gradmag,Gain_LR image (region mask),-0.007,0.01,·
+63,1000,gradmag,Gain_LR 3D displacement,0.119,0.011,E
+63,1000,gradmag,Gain_Dir held-out 1−SSIM,-0.315,0.354,·
+63,1000,gradmag,Gain_Dir local accuracy,-0.206,1.273,·
+63,1000,gradmag,Gain_Dir local completeness,-0.531,0.25,O
+63,1000,visibility,Gain_LR image (region mask),0.087,0.008,E
+63,1000,visibility,Gain_LR 3D displacement,0.023,0.024,E
+63,1000,visibility,Gain_Dir held-out 1−SSIM,1.131,1.415,·
+63,1000,visibility,Gain_Dir local accuracy,13.053,10.684,E
+63,1000,visibility,Gain_Dir local completeness,0.26,0.103,E
+65,0,opacity,Gain_LR image (region mask),0.067,0.01,E
+65,0,opacity,Gain_Dir held-out 1−SSIM,2.17,0.159,E
+65,0,opacity,Gain_Dir local accuracy,0.054,0.339,·
+65,0,opacity,Gain_Dir local completeness,0.41,0.05,E
+65,0,gradmag,Gain_LR image (region mask),0.029,0.011,E
+65,0,gradmag,Gain_Dir held-out 1−SSIM,-2.559,1.551,·
+65,0,gradmag,Gain_Dir local accuracy,9.013,11.398,·
+65,0,gradmag,Gain_Dir local completeness,-0.515,0.192,O
+65,0,visibility,Gain_LR image (region mask),0.072,0.012,E
+65,0,visibility,Gain_Dir held-out 1−SSIM,2.261,0.155,E
+65,0,visibility,Gain_Dir local accuracy,11.872,4.2,E
+65,0,visibility,Gain_Dir local completeness,0.41,0.05,E
+65,200,opacity,Gain_LR image (region mask),-0.049,0.018,O
+65,200,opacity,Gain_LR 3D displacement,0.08,0.013,E
+65,200,opacity,Gain_Dir held-out 1−SSIM,-0.277,0.081,O
+65,200,opacity,Gain_Dir local accuracy,0.138,0.651,·
+65,200,opacity,Gain_Dir local completeness,0.275,0.051,E
+65,200,gradmag,Gain_LR image (region mask),0.028,0.019,E
+65,200,gradmag,Gain_LR 3D displacement,0.116,0.013,E
+65,200,gradmag,Gain_Dir held-out 1−SSIM,0.973,0.245,E
+65,200,gradmag,Gain_Dir local accuracy,3.929,8.193,·
+65,200,gradmag,Gain_Dir local completeness,-0.307,0.165,O
+65,200,visibility,Gain_LR image (region mask),0.093,0.023,E
+65,200,visibility,Gain_LR 3D displacement,0.216,0.026,E
+65,200,visibility,Gain_Dir held-out 1−SSIM,-0.121,0.105,·
+65,200,visibility,Gain_Dir local accuracy,7.14,2.102,E
+65,200,visibility,Gain_Dir local completeness,0.268,0.049,E
+65,1000,opacity,Gain_LR image (region mask),-0.064,0.022,O
+65,1000,opacity,Gain_LR 3D displacement,0.069,0.015,E
+65,1000,opacity,Gain_Dir held-out 1−SSIM,-0.195,0.073,O
+65,1000,opacity,Gain_Dir local accuracy,0.345,0.381,·
+65,1000,opacity,Gain_Dir local completeness,0.247,0.032,E
+65,1000,gradmag,Gain_LR image (region mask),0.038,0.023,E
+65,1000,gradmag,Gain_LR 3D displacement,0.103,0.009,E
+65,1000,gradmag,Gain_Dir held-out 1−SSIM,0.736,0.366,E
+65,1000,gradmag,Gain_Dir local accuracy,2.892,6.627,·
+65,1000,gradmag,Gain_Dir local completeness,-0.329,0.146,O
+65,1000,visibility,Gain_LR image (region mask),0.089,0.029,E
+65,1000,visibility,Gain_LR 3D displacement,0.177,0.028,E
+65,1000,visibility,Gain_Dir held-out 1−SSIM,-0.101,0.109,·
+65,1000,visibility,Gain_Dir local accuracy,7.098,2.3,E
+65,1000,visibility,Gain_Dir local completeness,0.238,0.032,E
+69,0,opacity,Gain_LR image (region mask),0.073,0.011,E
+69,0,opacity,Gain_Dir held-out 1−SSIM,4.814,0.528,E
+69,0,opacity,Gain_Dir local accuracy,-0.244,0.279,·
+69,0,opacity,Gain_Dir local completeness,0.209,0.014,E
+69,0,gradmag,Gain_LR image (region mask),0.024,0.015,·
+69,0,gradmag,Gain_Dir held-out 1−SSIM,-6.521,2.314,O
+69,0,gradmag,Gain_Dir local accuracy,3.973,3.984,·
+69,0,gradmag,Gain_Dir local completeness,-0.168,0.073,O
+69,0,visibility,Gain_LR image (region mask),0.081,0.01,E
+69,0,visibility,Gain_Dir held-out 1−SSIM,5.279,0.566,E
+69,0,visibility,Gain_Dir local accuracy,5.354,1.766,E
+69,0,visibility,Gain_Dir local completeness,0.209,0.014,E
+69,200,opacity,Gain_LR image (region mask),0.056,0.011,E
+69,200,opacity,Gain_LR 3D displacement,0.039,0.012,E
+69,200,opacity,Gain_Dir held-out 1−SSIM,-0.767,0.405,O
+69,200,opacity,Gain_Dir local accuracy,0.456,0.43,E
+69,200,opacity,Gain_Dir local completeness,0.167,0.012,E
+69,200,gradmag,Gain_LR image (region mask),0.003,0.034,·
+69,200,gradmag,Gain_LR 3D displacement,0.117,0.017,E
+69,200,gradmag,Gain_Dir held-out 1−SSIM,0.726,0.659,·
+69,200,gradmag,Gain_Dir local accuracy,0.74,2.953,·
+69,200,gradmag,Gain_Dir local completeness,-0.123,0.077,O
+69,200,visibility,Gain_LR image (region mask),0.116,0.029,E
+69,200,visibility,Gain_LR 3D displacement,0.091,0.023,E
+69,200,visibility,Gain_Dir held-out 1−SSIM,-0.497,0.472,·
+69,200,visibility,Gain_Dir local accuracy,4.948,1.158,E
+69,200,visibility,Gain_Dir local completeness,0.164,0.02,E
+69,1000,opacity,Gain_LR image (region mask),0.048,0.062,·
+69,1000,opacity,Gain_LR 3D displacement,0.052,0.012,E
+69,1000,opacity,Gain_Dir held-out 1−SSIM,-0.626,0.341,O
+69,1000,opacity,Gain_Dir local accuracy,0.592,0.534,·
+69,1000,opacity,Gain_Dir local completeness,0.159,0.022,E
+69,1000,gradmag,Gain_LR image (region mask),0.026,0.045,·
+69,1000,gradmag,Gain_LR 3D displacement,0.102,0.016,E
+69,1000,gradmag,Gain_Dir held-out 1−SSIM,0.104,0.947,·
+69,1000,gradmag,Gain_Dir local accuracy,0.599,2.964,·
+69,1000,gradmag,Gain_Dir local completeness,-0.099,0.068,O
+69,1000,visibility,Gain_LR image (region mask),0.137,0.047,E
+69,1000,visibility,Gain_LR 3D displacement,0.069,0.017,E
+69,1000,visibility,Gain_Dir held-out 1−SSIM,-0.34,0.53,·
+69,1000,visibility,Gain_Dir local accuracy,4.724,1.516,E
+69,1000,visibility,Gain_Dir local completeness,0.16,0.022,E
+83,0,opacity,Gain_LR image (region mask),0.043,0.008,E
+83,0,opacity,Gain_Dir held-out 1−SSIM,3.242,0.114,E
+83,0,opacity,Gain_Dir local accuracy,-0.176,0.024,O
+83,0,opacity,Gain_Dir local completeness,0.256,0.018,E
+83,0,gradmag,Gain_LR image (region mask),0.014,0.008,E
+83,0,gradmag,Gain_Dir held-out 1−SSIM,-5.222,0.807,O
+83,0,gradmag,Gain_Dir local accuracy,-0.32,0.125,O
+83,0,gradmag,Gain_Dir local completeness,-0.252,0.084,O
+83,0,visibility,Gain_LR image (region mask),0.05,0.009,E
+83,0,visibility,Gain_Dir held-out 1−SSIM,3.492,0.155,E
+83,0,visibility,Gain_Dir local accuracy,1.265,0.512,E
+83,0,visibility,Gain_Dir local completeness,0.234,0.037,E
+83,200,opacity,Gain_LR image (region mask),0.063,0.01,E
+83,200,opacity,Gain_LR 3D displacement,0.103,0.021,E
+83,200,opacity,Gain_Dir held-out 1−SSIM,-0.033,0.093,·
+83,200,opacity,Gain_Dir local accuracy,-0.257,0.044,O
+83,200,opacity,Gain_Dir local completeness,0.218,0.053,E
+83,200,gradmag,Gain_LR image (region mask),0.015,0.013,·
+83,200,gradmag,Gain_LR 3D displacement,0.104,0.023,E
+83,200,gradmag,Gain_Dir held-out 1−SSIM,0.498,0.386,·
+83,200,gradmag,Gain_Dir local accuracy,-0.287,0.149,O
+83,200,gradmag,Gain_Dir local completeness,-0.217,0.103,O
+83,200,visibility,Gain_LR image (region mask),0.082,0.011,E
+83,200,visibility,Gain_LR 3D displacement,0.114,0.024,E
+83,200,visibility,Gain_Dir held-out 1−SSIM,0.182,0.13,E
+83,200,visibility,Gain_Dir local accuracy,1.157,0.498,E
+83,200,visibility,Gain_Dir local completeness,0.176,0.06,E
+83,1000,opacity,Gain_LR image (region mask),0.07,0.009,E
+83,1000,opacity,Gain_LR 3D displacement,0.121,0.029,E
+83,1000,opacity,Gain_Dir held-out 1−SSIM,-0.017,0.133,·
+83,1000,opacity,Gain_Dir local accuracy,-0.299,0.034,O
+83,1000,opacity,Gain_Dir local completeness,0.169,0.066,E
+83,1000,gradmag,Gain_LR image (region mask),0.021,0.015,·
+83,1000,gradmag,Gain_LR 3D displacement,0.091,0.02,E
+83,1000,gradmag,Gain_Dir held-out 1−SSIM,0.507,0.345,E
+83,1000,gradmag,Gain_Dir local accuracy,-0.269,0.151,O
+83,1000,gradmag,Gain_Dir local completeness,-0.234,0.104,O
+83,1000,visibility,Gain_LR image (region mask),0.097,0.012,E
+83,1000,visibility,Gain_LR 3D displacement,0.101,0.018,E
+83,1000,visibility,Gain_Dir held-out 1−SSIM,0.177,0.164,·
+83,1000,visibility,Gain_Dir local accuracy,1.104,0.46,E
+83,1000,visibility,Gain_Dir local completeness,0.115,0.089,·
