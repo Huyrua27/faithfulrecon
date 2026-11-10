@@ -69,7 +69,7 @@ def load_run(run_dir: str | Path) -> RunData:
         labels = {
             key: data[key]
             for key in data.files
-            if key in ("distance", "m_i", "f_i")
+            if key in ("distance", "m_i", "f_i", "f_i_nogate")
         }
 
     scene = run_dir.parent.parent.name
@@ -188,7 +188,7 @@ def validate(run: RunData) -> list[str]:
 
             if not np.isfinite(arr).all():
                 raise ValueError(f"Non-finite values in label: {name}")
-        elif name in ("m_i", "f_i"):
+        elif name in ("m_i", "f_i", "f_i_nogate"):
             if arr.dtype != np.bool_:
                 raise ValueError(
                     f"Invalid dtype for {name}: expected bool, got {arr.dtype}"
