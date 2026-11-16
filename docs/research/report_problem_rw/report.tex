@@ -31,17 +31,17 @@
 \normalsize (Quantifying and Analyzing Floaters in Sparse-View 3DGS under Photometric Inconsistency)}
 \author{Nhóm FaithfulRecon --- Trường Đại học Bách khoa, ĐHQG-HCM\\
 GVHD: TS. Nguyễn Đức Dũng, ThS. Nguyễn Tuấn Khôi}
-\date{Bản nháp sửa đổi lần 3, 14/11/2026}
+\date{Bản nháp sửa đổi lần 4, 15/11/2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-\noindent Báo cáo trình bày cơ sở lý thuyết, phát biểu bài toán và tổng quan tài liệu cho đề tài nghiên cứu hiện tượng floater trong 3D Gaussian Splatting (3DGS) khi số lượng góc nhìn huấn luyện hạn chế và các ảnh huấn luyện chịu sai lệch trắc quang theo từng ảnh (phơi sáng, cân bằng trắng, ánh xạ tông màu). Câu hỏi nghiên cứu trung tâm là: \emph{độ phủ đa góc nhìn hạn chế và sai lệch trắc quang giữa các góc nhìn tác động riêng rẽ và đồng thời như thế nào đến sự hình thành các Gaussian nằm ngoài bề mặt.} Mục~\ref{sec:background} trình bày mô hình 3DGS và hai giả định nền tảng. Mục~\ref{sec:problem} xác định phạm vi thuật ngữ, phân tích hai nguồn gốc của floater, phân loại mức độ bằng chứng hiện có và nêu giả thuyết về cơ chế tương tác. Mục~\ref{sec:rw} phân tích 18 công trình liên quan. Mục~\ref{sec:gap} xác định các khoảng trống nghiên cứu và đóng góp dự kiến. Mục~\ref{sec:pilot} trình bày giao thức đo, kết quả sơ bộ và các yếu tố gây nhiễu đã nhận diện.
+\noindent Báo cáo trình bày cơ sở lý thuyết, phát biểu bài toán và tổng quan tài liệu cho đề tài nghiên cứu hiện tượng floater trong 3D Gaussian Splatting (3DGS) khi số lượng góc nhìn huấn luyện hạn chế và các ảnh huấn luyện chịu sai lệch trắc quang theo từng ảnh (phơi sáng, cân bằng trắng, ánh xạ tông màu). Câu hỏi nghiên cứu trung tâm là: \emph{độ phủ đa góc nhìn hạn chế và sai lệch trắc quang giữa các góc nhìn tác động riêng rẽ và đồng thời như thế nào đến sự hình thành các Gaussian nằm ngoài bề mặt.} Mục~\ref{sec:background} trình bày mô hình 3DGS và hai giả định nền tảng. Mục~\ref{sec:problem} xác định phạm vi thuật ngữ, phân tích hai nguồn gốc của floater, phân loại mức độ bằng chứng hiện có và nêu giả thuyết về cơ chế tương tác. Mục~\ref{sec:rw} phân tích 18 công trình liên quan. Mục~\ref{sec:gap} xác định các khoảng trống nghiên cứu và đóng góp dự kiến. Mục~\ref{sec:pilot} trình bày giao thức đo, kết quả thực nghiệm RQ1, kết luận và hướng phương pháp.
 
 \smallskip\noindent\textbf{Quy ước trình bày.} Với mỗi công trình, phần \textcolor{paper}{\textbf{Nội dung chính}} tóm tắt những gì bài báo trình bày, kèm vị trí tham chiếu; phần \textcolor{nhom}{\textbf{Nhận xét}} là đánh giá của nhóm. Các nhận định được phân thành ba mức: \emph{có cơ sở} (được mô hình hoặc tài liệu hỗ trợ), \emph{giả thuyết} (hợp lý, có thể kiểm chứng, chưa được kiểm chứng) và \emph{chưa chặt chẽ}. Thông tin hội nghị được ghi theo bản PDF hoặc arXiv mà nhóm sử dụng.
 
-\smallskip\noindent\textbf{Thay đổi so với bản trước.} (1) Thu hẹp phạm vi từ ``chiếu sáng không đồng nhất'' sang ``sai lệch trắc quang theo từng ảnh''; (2) phát biểu lại giả định A1, A2; (3) phát biểu thận trọng hơn giả thuyết cơ chế; (4) bổ sung Gaussian-DK, AD-GS, ICO-GS và bảng phân loại mức độ bằng chứng; (5) xác định lại khoảng trống và đóng góp; (6) định nghĩa đầy đủ chỉ số $W_{\text{float}}$ và các yếu tố gây nhiễu của thí nghiệm; (7) bổ sung kết quả E5 (SH bậc 3), E4 (bù affine theo ảnh), E1 (nhiễu theo pixel), E3 (lưới $N\times S$), kết quả kiểm tra scan24 và vấn đề của bề mặt tham chiếu (Mục~\ref{sec:factors}). Kết quả chính mới: P2 không được ủng hộ, vì trong khoảng $N=4$--8 tác động của sai lệch trắc quang tăng theo $N$; floater do thành phần sai lệch nhất quán trong từng ảnh gây ra, và bù affine theo ảnh không loại bỏ được floater.
+\smallskip\noindent\textbf{Thay đổi so với bản trước.} (1) Thu hẹp phạm vi từ ``chiếu sáng không đồng nhất'' sang ``sai lệch trắc quang theo từng ảnh''; (2) phát biểu lại giả định A1, A2; (3) phát biểu thận trọng hơn giả thuyết cơ chế; (4) bổ sung Gaussian-DK, AD-GS, ICO-GS và bảng phân loại mức độ bằng chứng; (5) xác định lại khoảng trống và đóng góp; (6) định nghĩa đầy đủ chỉ số $W_{\text{float}}$ và các yếu tố gây nhiễu của thí nghiệm; (7) bổ sung kết quả E5 (SH bậc 3), E4 (bù affine theo ảnh), E1 (nhiễu theo pixel), E3 (lưới $N\times S$), kết quả kiểm tra scan24 và vấn đề của bề mặt tham chiếu (Mục~\ref{sec:factors}). (8) đánh giá lại toàn bộ 336 checkpoint với bề mặt tham chiếu lọc chặt và tập góc nhìn kiểm định chung; bổ sung nhiễu toàn cục (E1b), bù oracle và nhiễu không $\gamma$ (E4b), affine learning rate cao (E4c), căn chỉnh dạng đóng (M1), $N\in\{12,16\}$ (E3b), khởi tạo visual hull (E9), cấu hình nhiễu và seed bổ sung (E8, E11), tín hiệu phát hiện floater (E7), cùng kết luận RQ1 và hướng phương pháp (Mục~\ref{sec:final}, \ref{sec:conclusion}). Kết quả chính: P1 vững (26/26 cặp); yếu tố gây floater là sự khác nhau của phép biến đổi trắc quang giữa các ảnh; không có tương tác nhất quán giữa $N$ và $S$ trong khoảng 4--16 (P2 không được ủng hộ); bù ngoại hình học dần không loại bỏ floater, trong khi căn chỉnh dạng đóng khớp tức thời giảm mức tăng còn 10--16\% nhưng làm mất màu tuyệt đối; khởi tạo ngẫu nhiên khuếch đại tác động 2--6 lần.
 \end{abstract}
 
 \tableofcontents
@@ -438,7 +438,7 @@ g(Y) = \beta_0+\beta_1N+\beta_2S+\beta_3\,N S+u_{\text{scan}}+\epsilon,
 trong đó $Y$ là chỉ số floater, $g$ là hàm logit (do $Y\in[0,1]$), $u_{\text{scan}}$ là hiệu ứng theo scan. Hệ số $\beta_3$ biểu thị tương tác. Do chỉ có ít scan, kết quả được báo cáo đồng thời theo từng scan, kèm phân tích hiệu theo cặp $\Delta_S(N)=Y(N,S)-Y(N,\text{none})$ cùng scan và seed.
 
 %=====================================================================
-\section{Giao thức đo và kết quả sơ bộ RQ1}
+\section{Giao thức đo và kết quả thực nghiệm RQ1}
 \label{sec:pilot}
 
 \subsection{Giao thức}
@@ -581,7 +581,7 @@ Loại bỏ các Gaussian kích thước lớn chỉ làm mức tăng giảm 0--
 
 \subsection{Biểu diễn màu, cấu trúc nhiễu và số góc nhìn}
 \label{sec:factors}
-Các thí nghiệm dưới đây sử dụng scan63 và scan83, 3 seed, cùng giao thức như Mục~\ref{sec:protocol}. Mức none của biến thể gốc (SH bậc 0, không bù ngoại hình) được dùng làm mốc khi biến thể không có mức none riêng (E1).
+Các thí nghiệm dưới đây sử dụng scan63 và scan83, 3 seed, cùng giao thức như Mục~\ref{sec:protocol}. Mức none của biến thể gốc (SH bậc 0, không bù ngoại hình) được dùng làm mốc khi biến thể không có mức none riêng (E1). Số liệu trong mục này theo đánh giá ban đầu (bề mặt tham chiếu cũ); kết quả đánh giá lại và các thí nghiệm bổ sung được trình bày ở Mục~\ref{sec:final}.
 
 \paragraph{E5 --- SH bậc 3.} Thay màu RGB bằng hệ số SH bậc 3 (learning rate của các hệ số bậc $\ge 1$ bằng 1/20 learning rate màu, cộng trong miền logit).
 \begin{table}[H]
@@ -623,7 +623,7 @@ scan83 & strong & 0.490 & 0.471 & $+0.345$ & $+0.179$ & 20.61 & 20.46 \\
   \item Bù affine \textbf{không} đưa $W_{\text{float}}$ về mức none. Ở mức strong, giá trị tuyệt đối chỉ giảm 13\% (scan63) và 4\% (scan83).
   \item Mức tăng $\Delta$ giảm 26--48\% ở mức strong. Tuy nhiên ở scan83, phần giảm này chủ yếu do mức nền tăng (0.145 $\to$ 0.292): khi dữ liệu không có nhiễu, mô-đun affine làm tăng floater. Kết quả này phù hợp với P4 (mô-đun ngoại hình có thể ảnh hưởng xấu tới hình học) nhưng cần thêm seed và scan để xác nhận.
   \item PSNR tăng khoảng 1 dB trên scan63, gần như không đổi trên scan83.
-  \item Hai giải thích còn mở: (i) phần dư do $\gamma_k$ và phép cắt mà affine không biểu diễn được vẫn đủ gây floater; (ii) mô-đun affine và hình học được tối ưu đồng thời từ đầu, nên floater có thể hình thành trong giai đoạn mật độ hoá trước khi affine hội tụ. Hai giải thích này được tách bằng E4b (xem kế hoạch).
+  \item Hai giải thích còn mở: (i) phần dư do $\gamma_k$ và phép cắt mà affine không biểu diễn được vẫn đủ gây floater; (ii) mô-đun affine và hình học được tối ưu đồng thời từ đầu, nên floater có thể hình thành trong giai đoạn mật độ hoá trước khi affine hội tụ. Mục~\ref{sec:final} cho thấy giải thích (i) không được ủng hộ.
 \end{itemize}
 Lưu ý: mức none của scan83 dao động mạnh giữa các biến thể (0.145 với SH bậc 0, 0.214 với SH bậc 3, 0.292 với affine). Do đó các tỉ lệ $\Delta$ trên scan83 kém tin cậy hơn so sánh trực tiếp ở mức strong (0.45--0.49 ở cả ba biến thể).
 
@@ -642,7 +642,7 @@ scan83 & strong & $+0.345$ & $-0.004$ & $-0.01$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-Với cùng độ lớn sai lệch tại mỗi pixel, nhiễu không có hệ thống gần như không làm tăng floater. Yếu tố gây floater là \textbf{thành phần sai lệch nhất quán trong từng ảnh}, không phải độ lớn sai lệch theo điểm. Giới hạn: nhiễu theo pixel đồng thời loại bỏ tính nhất quán theo không gian và tính nhất quán trong ảnh; thí nghiệm này chưa tách được việc floater cần sai lệch \emph{khác nhau giữa các ảnh} hay chỉ cần sai lệch \emph{tần số thấp}. Đối chứng E1b (cùng một $\phi$ cho mọi ảnh) được đề xuất để tách hai trường hợp.
+Với cùng độ lớn sai lệch tại mỗi pixel, nhiễu không có hệ thống gần như không làm tăng floater. Yếu tố gây floater là \textbf{thành phần sai lệch nhất quán trong từng ảnh}, không phải độ lớn sai lệch theo điểm. Giới hạn: nhiễu theo pixel đồng thời loại bỏ tính nhất quán theo không gian và tính nhất quán trong ảnh; thí nghiệm này chưa tách được việc floater cần sai lệch \emph{khác nhau giữa các ảnh} hay chỉ cần sai lệch \emph{tần số thấp}. Đối chứng E1b (cùng một $\phi$ cho mọi ảnh, Mục~\ref{sec:final}) cho thấy trường hợp thứ nhất đúng.
 
 \paragraph{E3 --- Lưới $N\times S$.} $N\in\{4,6,8\}$, tập camera lồng nhau (FPS), 16 góc nhìn kiểm định cố định cho mọi $N$. Hình~\ref{fig:e3} trình bày kết quả.
 \begin{figure}[H]
@@ -679,44 +679,210 @@ Hồi quy logit với hiệu ứng cố định theo scan ($S=0;\ 0.5;\ 1$): $\h
 
 \paragraph{Bề mặt tham chiếu chứa điểm ngoài mặt nạ.} Bề mặt tham chiếu được lọc với điều kiện ``nằm trong mặt nạ ở ít nhất 1 góc nhìn''. Tỉ lệ điểm tham chiếu nằm trong mặt nạ chỉ là 0.83 (scan63) và 0.62 (scan83). Hệ quả: completeness bị đánh giá cao, và Gaussian nằm gần các điểm tham chiếu ngoài vật thể bị tính là ``gần bề mặt'', dẫn tới đánh giá thấp $W_{\text{float}}$. Do các so sánh đều theo cặp, chiều của $\Delta$ khó thay đổi, nhưng độ lớn có thể thay đổi. Đề xuất lọc lại với điều kiện nằm trong mặt nạ ở ít nhất 80\% số góc nhìn quan sát được và tính lại E0 trên checkpoint hiện có.
 
+\subsection{Đánh giá lại và các thí nghiệm bổ sung}
+\label{sec:final}
+\paragraph{Giao thức đánh giá cuối.} Toàn bộ 336 checkpoint (104 cấu hình huấn luyện) được đánh giá lại theo giao thức thống nhất:
+\begin{itemize}
+  \item \textbf{Bề mặt tham chiếu chặt:} chỉ giữ điểm STL nằm trong mặt nạ ở ít nhất 80\% số góc nhìn mà điểm chiếu vào ảnh (giữ 69\%, 43\% và 30\% số điểm của scan24, scan63, scan83; lấy mẫu tối đa 200\,000 điểm).
+  \item \textbf{Góc nhìn kiểm định chung:} 16 góc nhìn kiểm định được chọn ngoài 16 camera FPS đầu tiên, nên mọi cấu hình với $N\le 16$ được đánh giá trên cùng một tập góc nhìn.
+  \item Các giá trị trong mục này \textbf{không so sánh trực tiếp} với các bảng ở Mục~\ref{sec:pilot}--\ref{sec:factors} (khác bề mặt tham chiếu và góc nhìn kiểm định). Mọi $\Delta W_{\text{float}}$ là hiệu theo cặp với mức none cùng biến thể, cùng scan, cùng $N$ và cùng seed; khi biến thể không có mức none riêng (nhiễu toàn cục, nhiễu theo pixel, oracle), mốc là mức none của biến thể gốc.
+\end{itemize}
+
+\paragraph{Ảnh hưởng của bề mặt tham chiếu.} Với $N=8$, khởi tạo ngẫu nhiên, $W_{\text{float}}(0.1)$ theo bề mặt chặt và bề mặt cũ chênh lệch không quá 0.006 trên scan24 và scan63. Trên scan83, bề mặt chặt làm tăng $W_{\text{float}}$ chủ yếu ở mức none (0.124 $\to$ 0.162; mild 0.250 $\to$ 0.277; strong 0.468 $\to$ 0.486): các Gaussian nằm gần điểm tham chiếu ngoài vật thể (mặt bàn, nền) trước đây được tính là ``gần bề mặt''. Chiều của mọi so sánh không thay đổi; độ lớn $\Delta W$ trên scan83 giảm nhẹ.
+
+\paragraph{P1 với bề mặt chặt, thêm seed và cấu hình nhiễu (E11, E8).} Bảng~\ref{tab:p1final} trình bày kết quả của biến thể gốc; scan63 và scan83 được bổ sung seed 3 và 4 (E11).
+\begin{table}[H]
+\centering\small
+\caption{$W_{\text{float}}(0.1)$ và $\Delta W_{\text{float}}(0.1)$ so với none, $N=8$, khởi tạo ngẫu nhiên, SH bậc 0. Số seed: 3 (scan24), 5 (scan63, scan83).}
+\label{tab:p1final}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \multicolumn{3}{c}{$W_{\text{float}}$} & \multicolumn{2}{c}{$\Delta W_{\text{float}}$ (số cặp tăng)} & PSNR strong \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+Scan & none & mild & strong & mild & strong & (dB) \\
+\midrule
+scan24 & 0.332 & 0.470 & 0.593 & $+0.137$ (3/3) & $+0.261$ (3/3) & 11.10 \\
+scan63 & 0.262 & 0.359 & 0.467 & $+0.096$ (5/5) & $+0.204$ (5/5) & 19.41 \\
+scan83 & 0.162 & 0.277 & 0.486 & $+0.115$ (5/5) & $+0.324$ (5/5) & 21.08 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}
+  \item $W_{\text{float}}$ tăng ở \textbf{26/26} cặp; mức tăng trung bình $+0.113$ (mild) và $+0.263$ (strong).
+  \item \textbf{E8 --- cấu hình nhiễu khác.} Với hai seed nhiễu khác (cùng biên độ $s,b,\gamma$ của mức strong), $\Delta W_{\text{float}}$ là $+0.109$ và $+0.219$ (scan63), $+0.081$ và $+0.269$ (scan83), tăng ở 12/12 cặp. Chiều tác động không đổi, nhưng độ lớn thay đổi tới 3--4 lần giữa các cấu hình nhiễu, lớn hơn nhiều so với dao động giữa các seed huấn luyện. Do đó mức $S$ (biên độ của phân bố tham số) chỉ mô tả một phần cường độ sai lệch; cách các tham số phân bố trên các góc nhìn cũng quyết định độ lớn của tác động.
+  \item \textbf{E11 --- dao động theo seed.} Ở mức none, $W_{\text{float}}$ của biến thể gốc dao động 0.251--0.276 (scan63) và 0.137--0.186 (scan83) trên 5 seed. Với bù affine, dao động trên scan83 tăng lên 0.120--0.405: mô-đun affine làm kết quả huấn luyện kém ổn định.
+\end{itemize}
+
+\paragraph{Cơ chế: cấu trúc của sai lệch (E1, E1b, E4b không $\gamma$).} Hình~\ref{fig:mech} tổng hợp mức tăng $\Delta W_{\text{float}}$ ở mức strong của mọi biến thể.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/final_mechanism.png}
+\caption{$\Delta W_{\text{float}}(0.1)$ so với none ở mức strong, $N=8$, bề mặt tham chiếu chặt. Thanh: trung bình theo seed (3 seed; biến thể gốc 5 seed); đoạn đen: độ lệch chuẩn mẫu.}
+\label{fig:mech}
+\end{figure}
+\begin{itemize}
+  \item \textbf{Nhiễu theo pixel} (E1, kỳ vọng 0, cùng độ lớn tại mỗi pixel): $\Delta W_{\text{float}}$ bằng $+0.024$ và $-0.006$.
+  \item \textbf{Cùng một biến đổi cho mọi ảnh} (E1b; dùng bộ tham số có độ lệch phơi sáng lớn nhất trong lần lấy mẫu): $+0.018$ và $-0.020$ ở mức strong. Mỗi ảnh lệch so với ảnh gốc ít nhất bằng ảnh có độ lệch lớn nhất của nhiễu ISP, và PSNR giảm (19.57 và 22.90 dB) do mô hình học màu đã bị biến đổi, nhưng hình học hầu như không bị ảnh hưởng. Ngoại lệ: scan83 mức mild có $\Delta W=+0.094$ với độ lệch chuẩn 0.156, do một seed.
+  \item \textbf{Nhiễu không có $\gamma$} (chỉ gồm $g_k$ và $\mathbf{w}_k$): $+0.170$ và $+0.320$, so với $+0.204$ và $+0.324$ của nhiễu đầy đủ. Thành phần phi tuyến $\gamma_k$ không cần thiết để gây floater.
+\end{itemize}
+Kết hợp E1 và E1b: yếu tố gây floater là \textbf{sự khác nhau của phép biến đổi trắc quang giữa các ảnh} (thành phần không nhất quán giữa các góc nhìn), không phải độ lệch so với ảnh gốc và không phải bản thân tính chất tần số thấp của sai lệch. Kết quả này phù hợp với giả định A2 ở Mục~\ref{sec:assumptions}: chỉ khi không tồn tại một trường màu nhất quán giải thích được mọi ảnh thì phần dư mới tạo áp lực lên hình học.
+
+\paragraph{Biểu diễn màu và cắt kích thước (E5, E6 đánh giá lại).} SH bậc 3 giữ 100\% (scan63) và 61\% (scan83) mức tăng; giữ cắt kích thước tới hết huấn luyện giữ 91\% và 106\%. Các kết luận ở Mục~\ref{sec:robust} và Mục~\ref{sec:factors} không thay đổi khi đánh giá lại.
+
+\paragraph{Bù ngoại hình (E4, E4b, E4c, M1).} Các mô-đun bù chỉ áp lên ảnh kết xuất trong hàm mất mát; ảnh kiểm định được kết xuất không qua mô-đun. Ngoài affine học (E4), các biến thể mới gồm: affine với learning rate 1e-2 (E4c); \emph{oracle}, áp đúng phép biến đổi nhiễu đã biết của từng ảnh lên ảnh kết xuất (E4b, cận trên của mọi mô-đun bù toàn ảnh); và \emph{căn chỉnh dạng đóng} (M1): tại mỗi vòng lặp, giải bình phương tối thiểu theo từng kênh một phép affine đưa ảnh kết xuất về ảnh huấn luyện trên các pixel vật thể, không lan truyền gradient qua hệ số; biến thể \texttt{cf\_log} thực hiện trong miền log cường độ, nơi $g_k$, $\mathbf{w}_k$ và $\gamma_k$ của mô hình nhiễu đều trở thành affine theo kênh.
+\begin{table}[H]
+\centering\small
+\caption{Bù ngoại hình, $N=8$, 3 seed (affine lr 1e-3 và biến thể gốc: 5 seed). Cột ``Tỉ lệ'': $\Delta W$ của biến thể chia $\Delta W$ của biến thể gốc ở mức strong.}
+\label{tab:comp}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \multicolumn{2}{c}{$W_{\text{float}}$ none} & \multicolumn{2}{c}{$\Delta W$ strong (tỉ lệ)} & \multicolumn{2}{c}{PSNR strong (dB)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Biến thể & scan63 & scan83 & scan63 & scan83 & scan63 & scan83 \\
+\midrule
+Gốc & 0.262 & 0.162 & $+0.204$ & $+0.324$ & 19.41 & 21.08 \\
+Affine học, lr 1e-3 & 0.257 & 0.251 & $+0.181$ (0.89) & $+0.208$ (0.64) & 20.37 & 21.10 \\
+Affine học, nhiễu không $\gamma$ & -- & -- & $+0.136$ & $+0.175$ & 20.42 & 21.18 \\
+Affine học, lr 1e-2 & 0.251 & 0.256 & $+0.125$ (0.61) & $+0.209$ (0.65) & 21.24 & 22.16 \\
+Dạng đóng, tuyến tính & 0.262 & 0.571 & $+0.123$ (0.60) & $+0.217$ (0.67) & 10.49 & 9.88 \\
+Dạng đóng, log & 0.311 & 0.193 & $+0.033$ (0.16) & $+0.032$ (0.10) & 12.33 & 12.71 \\
+Oracle & -- & -- & $+0.003$ (0.01) & $+0.132$ (0.41) & 24.27 & 25.82 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}
+  \item \textbf{Affine học không loại bỏ floater}, kể cả khi tăng learning rate (giữ 61--65\%). Với nhiễu không có $\gamma$, phép biến đổi thật nằm trọn trong lớp affine (ma trận đường chéo), nhưng affine học vẫn giữ $+0.136$ và $+0.175$. Giải thích (i) của E4 (affine không biểu diễn được $\gamma_k$) \textbf{không được ủng hộ}.
+  \item \textbf{Oracle} loại bỏ hoàn toàn mức tăng trên scan63 và đưa PSNR về mức none, nhưng trên scan83 vẫn giữ $+0.132$ (3/3 cặp tăng). Nguyên nhân chưa được xác định; một giả thuyết là phần thông tin mất do phép cắt ở vùng phơi sáng cao, nơi gradient của ảnh kết xuất qua oracle bằng 0.
+  \item \textbf{Căn chỉnh dạng đóng trong miền log} giảm mức tăng xuống còn 10--16\% và giảm $W_{\text{float}}$ ở mức strong (0.344 so với 0.467; 0.224 so với 0.486). Tuy nhiên PSNR chỉ khoảng 12 dB ở \emph{mọi} mức, kể cả none, và số Gaussian giảm khoảng một nửa. Nguyên nhân: phép căn chỉnh theo từng ảnh hấp thụ mọi biến đổi màu chung của mô hình, nên màu tuyệt đối của cảnh không được xác định (tự do gauge). Biến thể tuyến tính vừa không giảm floater đáng kể vừa làm tăng mức nền trên scan83 (0.571, front(0.1) = 0.44).
+  \item Với các mô-đun không phải oracle, cải thiện trắc quang và cải thiện hình học \textbf{tách rời theo cả hai chiều}: affine học tăng PSNR 0--2 dB nhưng giảm $W_{\text{float}}$ ít; căn chỉnh log giảm floater mạnh nhưng làm mất màu tuyệt đối. Kết quả này ủng hộ P4 trên hai scan.
+  \item Diễn giải (giả thuyết, phù hợp với toàn bộ dữ liệu trên): các phương pháp bù hiệu quả về hình học (oracle, căn chỉnh dạng đóng) đều \emph{khớp tức thời} phép biến đổi tại mỗi vòng lặp, còn affine học phải hội tụ dần cùng hình học. Khi bù chưa hội tụ, phần dư trắc quang được giảm bằng hình học trong giai đoạn mật độ hoá và các Gaussian ngoài bề mặt được duy trì sau đó. Như vậy, nút thắt là \textbf{tốc độ hấp thụ phần dư} của mô-đun ngoại hình so với hình học, không phải dung lượng biểu diễn. Thí nghiệm khởi động affine trước mật độ hoá chưa được thực hiện để kiểm tra trực tiếp diễn giải này.
+\end{itemize}
+
+\paragraph{E3b --- Lưới $N\times S$ mở rộng tới $N=16$.} Bổ sung $N\in\{12,16\}$ cho scan63 và scan83 (3 mức, 3 seed), cùng tập góc nhìn kiểm định với $N=4$--8. Kết quả ở Hình~\ref{fig:nxs} và bảng dưới đây.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/final_nxs.png}
+\caption{Trái: $\Delta W_{\text{float}}(0.1)$ ở mức strong theo $N$. Phải: $W_{\text{float}}(0.1)$ ở mức none. Nét liền: khởi tạo ngẫu nhiên; nét đứt: khởi tạo visual hull (E9). Trung bình 3 seed (5 seed tại $N=8$, khởi tạo ngẫu nhiên); đoạn sai số: độ lệch chuẩn mẫu.}
+\label{fig:nxs}
+\end{figure}
+\begin{table}[H]
+\centering\small
+\caption{$\Delta W_{\text{float}}(0.1)$ so với none theo $N$, khởi tạo ngẫu nhiên.}
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+Scan & Mức & $N=4$ & $N=6$ & $N=8$ & $N=12$ & $N=16$ \\
+\midrule
+scan63 & mild & $+0.023$ & $+0.048$ & $+0.096$ & $+0.041$ & $+0.081$ \\
+scan63 & strong & $+0.145$ & $+0.154$ & $+0.204$ & $+0.136$ & $+0.205$ \\
+scan83 & mild & $-0.041$ & $+0.098$ & $+0.115$ & $+0.037$ & $+0.015$ \\
+scan83 & strong & $+0.041$ & $+0.186$ & $+0.324$ & $+0.172$ & $+0.030$ \\
+\midrule
+\multicolumn{2}{@{}l}{$W_{\text{float}}$ none (scan63 / scan83)} & 0.61 / 0.68 & 0.34 / 0.35 & 0.26 / 0.16 & 0.23 / 0.10 & 0.21 / 0.08 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Hồi quy logit với hiệu ứng cố định theo scan; khoảng tin cậy 95\% bằng bootstrap theo cặp (scan, seed):
+\begin{itemize}
+  \item $N\in\{4,\dots,16\}$, 102 lượt: $\hat\beta_N=-0.176$ $[-0.226, -0.120]$, $\hat\beta_S=+0.771$ $[+0.577, +1.004]$, $\hat\beta_{NS}=+0.009$ $[-0.007, +0.023]$. Tác động của $S$ trên thang logit gần như không đổi: 0.81 ($N=4$) đến 0.91 ($N=16$).
+  \item Chỉ $N\le 8$, 66 lượt: $\hat\beta_{NS}=+0.209$ $[+0.103, +0.308]$, khớp với kết quả E3 trước đây.
+\end{itemize}
+Nhận xét:
+\begin{itemize}
+  \item Tương tác dương trong khoảng $N=4$--8 \textbf{không kéo dài} khi mở rộng tới $N=16$. Trên toàn khoảng, không có bằng chứng tác động của $S$ thay đổi theo $N$ trên thang logit.
+  \item Trên thang tuyệt đối, hai scan khác nhau: scan63 giữ mức tăng 0.14--0.21 tới $N=16$; scan83 đạt cực đại tại $N=8$ rồi giảm còn $+0.030$ tại $N=16$. Với hai scan, không xác định được một dạng quan hệ chung.
+  \item \textbf{P2 không được ủng hộ}: không có khoảng $N$ nào trong 4--16 mà tác động của sai lệch trắc quang giảm khi tăng $N$ một cách nhất quán trên cả hai scan. Với $N=16$, mức strong vẫn tăng $W_{\text{float}}$ ở 6/6 cặp; tăng số góc nhìn không tự loại bỏ được tác động của sai lệch trắc quang.
+\end{itemize}
+
+\paragraph{E9 --- Khởi tạo visual hull.} Thay khối ngẫu nhiên $[-1,1]^3$ bằng 10\,000 điểm ngẫu nhiên trong visual hull của mặt nạ huấn luyện (điểm nằm trong mặt nạ ở mọi góc nhìn huấn luyện mà nó chiếu vào, và nằm trong ảnh của ít nhất một nửa số góc nhìn). Khởi tạo này sử dụng mặt nạ vật thể của ảnh huấn luyện, tức là thông tin bổ sung so với cấu hình gốc. Kết quả ở Bảng~\ref{tab:hull} và Hình~\ref{fig:nxs} (nét đứt).
+\begin{table}[H]
+\centering\small
+\caption{Khởi tạo ngẫu nhiên và visual hull, 3 seed.}
+\label{tab:hull}
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+& & \multicolumn{2}{c}{$W_{\text{float}}$ none} & \multicolumn{2}{c}{$\Delta W$ strong} & \multicolumn{2}{c}{PSNR none (dB)} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+Scan & $N$ & Ngẫu nhiên & Hull & Ngẫu nhiên & Hull & Ngẫu nhiên & Hull \\
+\midrule
+scan24 & 8 & 0.332 & 0.265 & $+0.261$ & $+0.153$ & 16.78 & 19.81 \\
+scan63 & 4 & 0.612 & 0.396 & $+0.145$ & $+0.039$ & 14.17 & 17.58 \\
+scan63 & 8 & 0.262 & 0.274 & $+0.204$ & $+0.093$ & 24.24 & 23.72 \\
+scan83 & 4 & 0.675 & 0.200 & $+0.041$ & $+0.017$ & 16.42 & 19.48 \\
+scan83 & 8 & 0.162 & 0.087 & $+0.324$ & $+0.051$ & 25.97 & 25.98 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}
+  \item Với $N=8$, khởi tạo visual hull giảm mức tăng do sai lệch trắc quang còn 59\% (scan24), 46\% (scan63) và 16\% (scan83). Mức tăng vẫn dương ở 9/9 cặp strong và 9/9 cặp mild: \textbf{P1 vẫn đúng}, nhưng với độ lớn nhỏ hơn đáng kể.
+  \item Với $N=4$, mức nền giảm mạnh (0.61 $\to$ 0.40; 0.68 $\to$ 0.20) và PSNR tăng khoảng 3 dB: phần lớn floater ở chế độ ít ảnh có nguồn gốc từ Gaussian khởi tạo ngoài vật thể.
+  \item Hồi quy logit với khởi tạo hull: $\hat\beta_{NS}=+0.084$ $[+0.067, +0.101]$; tác động của $S$ là 0.13 ($N=4$) và 0.47 ($N=8$).
+  \item Hệ quả: với khởi tạo ngẫu nhiên, tác động của sai lệch trắc quang được \textbf{khuếch đại 2--6 lần}. Các ước lượng độ lớn ở các mục trước nên được hiểu là cận trên đối với pipeline có khởi tạo tốt. Khởi tạo SfM chưa được thử nghiệm.
+\end{itemize}
+
+\paragraph{E7 --- Tín hiệu phát hiện floater.} Trên các checkpoint gốc ($N=8$, scan63 và scan83, 3 mức, 3 seed), mỗi Gaussian được gán nhãn floater nếu $d_i>0.1$ theo bề mặt chặt. Bốn tín hiệu được đánh giá bằng AUROC có trọng số theo đóng góp trên góc nhìn kiểm định: độ mờ thấp, kích thước lớn, số góc nhìn huấn luyện quan sát thấp ($n_{\text{vis}}$), và độ bất đồng giữa hai seed (khoảng cách tới Gaussian gần nhất của mô hình huấn luyện với seed khác; dạng đơn giản của point disagreement trong CoR-GS~\cite{corgs}, không đồng huấn luyện).
+\begin{table}[H]
+\centering\small
+\caption{AUROC có trọng số (trung bình 3 mức và 3 seed; 0.5 tương ứng ngẫu nhiên, nhỏ hơn 0.5 nghĩa là tín hiệu có chiều ngược).}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Tín hiệu & scan63 & scan83 & Theo mức (scan63: none / mild / strong) \\
+\midrule
+Bất đồng giữa hai seed & 0.84 & 0.89 & 0.81 / 0.83 / 0.87 \\
+Kích thước lớn & 0.78 & 0.83 & 0.76 / 0.78 / 0.79 \\
+$n_{\text{vis}}$ thấp & 0.57 & 0.25 & 0.65 / 0.59 / 0.48 \\
+Độ mờ thấp & 0.33 & 0.33 & 0.32 / 0.35 / 0.33 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}
+  \item Độ bất đồng giữa hai seed là tín hiệu tốt nhất và \textbf{không suy giảm} khi sai lệch trắc quang tăng (scan63: 0.81 $\to$ 0.87; scan83: 0.89 $\to$ 0.90). Giả thuyết ``rendering disagreement kém tin cậy dưới sai lệch trắc quang hệ thống'' (G4 cũ) không được ủng hộ đối với dạng bất đồng hình học này. Giới hạn: tín hiệu cần huấn luyện hai mô hình, và một phần hiệu quả đến từ việc Gaussian của mô hình thứ hai phần lớn nằm gần bề mặt.
+  \item Floater có độ mờ \emph{cao} hơn Gaussian bề mặt (AUROC của ``độ mờ thấp'' bằng 0.33), và trên scan83 được \emph{nhiều} góc nhìn quan sát hơn (0.25), phù hợp với E2b. Các tiêu chí cắt tỉa dựa trên độ mờ thấp hoặc ít góc nhìn quan sát không phù hợp với loại floater này.
+  \item Kích thước lớn là tín hiệu chi phí thấp có AUROC 0.78--0.83, nhưng E6 cho thấy chỉ cắt Gaussian lớn thì floater được thay thế bởi Gaussian khác.
+\end{itemize}
+
 \subsection{Tổng hợp trạng thái giả thuyết}
 \begin{table}[H]
 \centering\small
-\caption{Trạng thái các giả thuyết sau E0--E6.}
-\begin{tabularx}{\textwidth}{@{}p{4.2cm} Y p{3.2cm}@{}}
+\caption{Trạng thái các giả thuyết sau toàn bộ thí nghiệm (bề mặt tham chiếu chặt).}
+\begin{tabularx}{\textwidth}{@{}p{4.2cm} Y p{3.0cm}@{}}
 \toprule
 Giả thuyết & Kết quả & Trạng thái \\
 \midrule
-P1 & Tăng ở 18/18 cặp; vững theo $\tau$, $\varepsilon$, khi loại Gaussian lớn, với SH bậc 3 và khi có bù affine & Được ủng hộ \\
-P2 & Tác động của $S$ tăng theo $N$ trong khoảng 4--8 ($\hat\beta_{NS}>0$) & Không được ủng hộ \\
-P3 & front(0.1) tăng ở 15/18 cặp; khoảng cách tới camera giảm ít & Ủng hộ một phần \\
-P4 & Affine tăng PSNR ở scan63, giảm floater ít, tăng mức nền ở scan83 & Có dấu hiệu, cần thêm dữ liệu \\
-(b), dạng ``chỉ 1--2 góc nhìn'' & Mức tăng đến từ floater được nhiều góc nhìn quan sát & Không được ủng hộ \\
-Thiếu kênh màu phụ thuộc hướng nhìn & SH bậc 3 giữ 54--95\% mức tăng & Bị suy yếu \\
-Thành phần nhất quán trong ảnh gây floater & Nhiễu theo pixel cùng độ lớn: mức tăng $\approx 0$ & Được ủng hộ (chưa có E1b) \\
-Bù ngoại hình toàn cục loại bỏ floater & Affine giảm $W_{\text{float}}$ ở mức strong 4--13\% & Không được ủng hộ \\
+P1 & Tăng ở 26/26 cặp ($N=8$), 12/12 cặp với cấu hình nhiễu khác, mọi cặp strong với $N\in\{6,\dots,16\}$; vững theo $\tau$, SH bậc 3, cắt kích thước, bù affine, khởi tạo hull & Được ủng hộ \\
+P2 & $\hat\beta_{NS}>0$ với $N\le8$; $\hat\beta_{NS}\approx 0$ với $N=4$--16; dạng phụ thuộc scan & Không được ủng hộ \\
+P3 & front(0.1) tăng ở 15/18 cặp (đánh giá ban đầu); khoảng cách tới camera giảm ít & Ủng hộ một phần \\
+P4 & Affine học: PSNR tăng 0--2 dB, floater giảm ít; căn chỉnh log: floater giảm mạnh, mất màu tuyệt đối & Được ủng hộ (2 scan) \\
+Sai lệch khác nhau giữa các ảnh gây floater & Nhiễu theo pixel và nhiễu toàn cục: mức tăng $\approx 0$ & Được ủng hộ \\
+Thành phần phi tuyến $\gamma$ là cần thiết & Nhiễu không $\gamma$ giữ 83--99\% mức tăng & Không được ủng hộ \\
+Thiếu kênh màu phụ thuộc hướng nhìn & SH bậc 3 giữ 61--100\% mức tăng & Không được ủng hộ \\
+Affine thất bại do sai lớp mô hình & Affine vẫn thất bại khi nhiễu nằm trong lớp affine & Không được ủng hộ \\
+Bù khớp tức thời giảm floater & Oracle (scan63), căn chỉnh log (cả hai scan) & Được ủng hộ, kèm ngoại lệ oracle scan83 \\
+Khởi tạo ngẫu nhiên khuếch đại tác động & Visual hull giảm mức tăng còn 16--59\% & Được ủng hộ \\
+Bất đồng giữa các mô hình kém tin cậy dưới sai lệch trắc quang & AUROC 0.81--0.90, tăng theo $S$ & Không được ủng hộ \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\paragraph{Các yếu tố gây nhiễu đã nhận diện.}
+\subsection{Kết luận RQ1 và hướng phương pháp}
+\label{sec:conclusion}
+\paragraph{Phạm vi.} Các kết luận dưới đây áp dụng cho: DTU (scan24, scan63, scan83; các thí nghiệm cơ chế chỉ trên scan63 và scan83), sai lệch trắc quang tổng hợp dạng ISP toàn ảnh, 3DGS với renderer PyTorch, 7000 vòng lặp, chủ yếu SH bậc 0 và khởi tạo ngẫu nhiên. E10 (thêm scan DTU) chưa được thực hiện do dữ liệu chỉ có ba scan.
+
+\paragraph{Kết luận.}
 \begin{enumerate}
-  \item \textbf{Khởi tạo ngẫu nhiên} trong $[-1,1]^3$: một phần floater ở mức none xuất phát từ khởi tạo, đặc biệt ở scan24. So sánh theo cặp loại trừ ảnh hưởng này khỏi $\Delta$, nhưng giá trị tuyệt đối và tương tác với $N$ có thể bị ảnh hưởng. Đề xuất bổ sung khởi tạo bằng điểm SfM.
-  \item \textbf{Bề mặt tham chiếu} chứa điểm ngoài mặt nạ (62--83\% điểm trong mặt nạ).
-  \item \textbf{Dao động mức nền} ở scan83 (0.145--0.292 giữa các biến thể); chỉ có 3 seed.
-  \item \textbf{Một cấu hình nhiễu} (seed 0): phân bố tham số nhiễu giữa các góc nhìn chưa thay đổi.
-  \item \textbf{Hai scan} cho E1--E5; khoảng $N$ hẹp; $N=4$ là chế độ suy biến.
+  \item Sai lệch trắc quang theo từng ảnh làm tăng tỉ lệ đóng góp kết xuất của Gaussian ngoài bề mặt một cách nhất quán (P1); kết luận vững với mọi biến thể đã thử.
+  \item Yếu tố gây floater là \emph{sự khác nhau} của phép biến đổi trắc quang giữa các ảnh. Cùng một biến đổi cho mọi ảnh, hoặc nhiễu theo pixel có kỳ vọng 0, không làm tăng floater.
+  \item Dung lượng biểu diễn ngoại hình không phải nút thắt: SH bậc 3 và affine học (kể cả khi lớp affine chứa phép biến đổi thật) đều giữ phần lớn mức tăng; các cách bù khớp tức thời tại mỗi vòng lặp giảm mức tăng mạnh nhất.
+  \item Không có tương tác nhất quán giữa $N$ và $S$ trong khoảng 4--16 (P2 không được ủng hộ). Tăng số góc nhìn tới 16 không tự loại bỏ tác động của sai lệch trắc quang.
+  \item Khởi tạo ngẫu nhiên khuếch đại tác động 2--6 lần; độ lớn tác động phụ thuộc mạnh vào cách tham số nhiễu phân bố trên các góc nhìn.
 \end{enumerate}
 
-\paragraph{Kế hoạch tiếp theo.}
-\begin{enumerate}
-  \item Lọc lại bề mặt tham chiếu và tính lại E0 trên checkpoint hiện có (không huấn luyện lại).
-  \item E1b: cùng một $\phi$ cho mọi ảnh huấn luyện (12 lượt). Nếu floater không tăng, yếu tố gây floater là sai lệch \emph{khác nhau giữa các ảnh}.
-  \item E4b: nhiễu chỉ gồm $g_k, w_k$ ($\gamma=0$) kèm bù affine, và bù affine được khởi động trước giai đoạn mật độ hoá; tách hai giải thích (i) và (ii) của E4.
-  \item E3b: $N\in\{12, 16\}$ để xác định dạng tương tác.
-  \item Khởi tạo bằng điểm SfM cho một tập con cấu hình.
-  \item Khảo sát dataset có chiếu sáng vật lý (tiêu chí tại \texttt{docs/tasks/dataset\_survey\_criteria.md}).
-\end{enumerate}
+\paragraph{Hướng phương pháp (giai đoạn tiếp theo, chưa có kết quả).} Dựa trên kết luận 3 và kết quả M1, phương pháp đề xuất là \textbf{căn chỉnh trắc quang dạng đóng trong miền log có ràng buộc gauge}:
+\begin{itemize}
+  \item Tại mỗi vòng lặp, giải dạng đóng hệ số $(a_{k,c}, b_{k,c})$ của ảnh $k$, kênh $c$ trong miền log như M1; sau đó chuẩn hoá để trung bình hình học của $a_{k,c}$ và trung bình của $b_{k,c}$ trên các ảnh huấn luyện bằng phép đồng nhất (hoặc giữ một ảnh tham chiếu không căn chỉnh). Ràng buộc này khử bậc tự do màu chung đã làm PSNR của M1 giảm còn khoảng 12 dB.
+  \item Hệ số được cập nhật bằng trung bình trượt qua các vòng lặp để giảm nhiễu khi ảnh huấn luyện bị cắt ở vùng sáng; loại pixel bão hoà khỏi phép giải.
+  \item Kết hợp với khởi tạo tốt (visual hull hoặc SfM) và, nếu chi phí cho phép, tín hiệu bất đồng giữa hai mô hình để cắt tỉa.
+\end{itemize}
+Thí nghiệm kiểm chứng dự kiến: scan63 và scan83, $N\in\{4, 8, 16\}$, ba mức nhiễu, so sánh với affine học và oracle; báo cáo đồng thời $W_{\text{float}}$, PSNR trực tiếp và PSNR sau căn chỉnh theo ảnh kiểm định. Song song: khởi tạo SfM, thí nghiệm khởi động affine trước mật độ hoá, phân tích ngoại lệ oracle trên scan83 và chuyển sang dataset có chiếu sáng vật lý.
 
 %=====================================================================
 \begin{thebibliography}{99}\small
