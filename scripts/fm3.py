@@ -39,6 +39,33 @@ def parse(name: str) -> dict:
 
 
 @torch.no_grad()
+def covered_wfloat(model, cams, ref, ras, taus=(0.05, 0.1), r=5):
+    """W_float restricted to pixels onto which the reference projects (dilated by r): the DTU STL has holes on parts of
+    the objects (e.g. scan83 hat, scan63 pumpkin rim), where surface Gaussians are counted as floaters by W_float."""
+    d = nearest_dist(model.means.detach(), ref)
+    far = torch.stack([(d > t).float() for t in taus], 1)
+    fa, tot, cov_px, obj_px = torch.zeros(len(taus)), 0.0, 0.0, 0.0
+    for cam in cams:
+        Xc = ref @ cam.R.T + cam.t
+        z = Xc[:, 2]
+        u = torch.floor(cam.fx * Xc[:, 0] / z.clamp_min(1e-6) + cam.cx).long()
+        v = torch.floor(cam.fy * Xc[:, 1] / z.clamp_min(1e-6) + cam.cy).long()
+        ok = (z > 0) & (u >= 0) & (u < cam.W) & (v >= 0) & (v < cam.H)
+        c = torch.zeros(cam.H, cam.W, device=ref.device)
+        c[v[ok], u[ok]] = 1
+        cov = torch.nn.functional.max_pool2d(c[None, None], r, 1, r // 2)[0, 0]
+        out = model.render(ras, cam, torch.zeros(len(taus), device=ref.device), features=far)
+        fa += (out["image"] * cov[..., None]).sum((0, 1)).cpu()
+        tot += float((out["alpha"] * cov).sum())
+        obj = (cam.image.to(ref.device) < 0.99).any(-1).float()
+        cov_px += float((cov * obj).sum())
+        obj_px += float(obj.sum())
+    res = {f"wfloat_{str(t).replace('0.', '0', 1)}_cov": float(fa[i] / max(tot, 1e-9)) for i, t in enumerate(taus)}
+    res["ref_cover"] = cov_px / max(obj_px, 1.0)
+    return res
+
+
+@torch.no_grad()
 def fused_points(model, cams, masks, ras, max_points=300_000, seed=0):
     pts = []
     for cam, m in zip(cams, masks):
@@ -114,6 +141,7 @@ def main():
             cb = fm2.contrib(model, test_cams, ras, bg)
             row["wsig_01"] = float((cb * fm2.sigma_far(model, ref)).sum() / cb.sum().clamp_min(1e-12))
             row["psnr_aligned"] = fm2.aligned_psnr(model, test_cams, ras, bg)
+            row.update(covered_wfloat(model, test_cams, ref, ras))   # W_COV
             row.update(geometry(model, gcams, gmasks, ref, ras))
             rows.append(row)
             print({k: (round(v, 4) if isinstance(v, float) else v) for k, v in row.items()

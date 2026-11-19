@@ -107,7 +107,9 @@ def _gt(tr):
 @torch.no_grad()
 def gt_labels(tr):
     """d: centre distance to the STL reference; d_norm: d / std of the Gaussian along the reference normal.
-    y_geo: 1 off-surface (d > tau and d_norm > 3), 0 on-surface (d < tau/2 or d_norm < 1), -1 ambiguous."""
+    y_geo: 1 off-surface (d > tau, as in W_float, whatever the size), 0 on-surface (d < tau/2, or d <= tau and
+    d_norm < 1), -1 ambiguous. A wide Gaussian whose centre is farther than tau counts as off-surface: in v4 the
+    oracle moved the compensation onto such Gaussians when they were labelled on-surface by d_norm < 1."""
     P, N = _gt(tr)
     m = tr.model
     mu = m.means.detach()
@@ -124,8 +126,8 @@ def gt_labels(tr):
     dn = d / sig
     tau = float(getattr(tr.cfg, "gt_tau", 0.1))
     y = torch.full((m.n,), -1.0, device=mu.device)
-    y[(d < tau / 2) | (dn < 1)] = 0.0
-    y[(d > tau) & (dn > 3)] = 1.0
+    y[(d < tau / 2) | ((dn < 1) & (d <= tau))] = 0.0   # LABEL_V2
+    y[d > tau] = 1.0
     return d, dn, y
 
 

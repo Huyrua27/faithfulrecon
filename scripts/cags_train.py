@@ -39,7 +39,15 @@ def load(pattern):
         parts.append(d)
     if not parts:
         raise SystemExit(f"no logs match {pattern}")
-    return {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
+    D = {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
+    # LABEL_V2: labels recomputed from the logged distances (d > 0.1 is off-surface whatever d_norm);
+    # sw (inverse sampling rate of the logged strata) stays valid
+    y = np.full(len(D['d']), -1.0, np.float32)
+    y[(D['d'] < 0.05) | ((D['d_norm'] < 1) & (D['d'] <= 0.1))] = 0.0
+    y[D['d'] > 0.1] = 1.0
+    D['y_geo'] = y
+    D['y_joint'] = ((y == 1) & (D['delta'] > D['tau_delta'])).astype(np.float32)
+    return D
 
 
 def feat_idx(s):
