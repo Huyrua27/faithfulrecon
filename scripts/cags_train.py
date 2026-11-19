@@ -22,7 +22,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from frecon.cags import FEATS, GROUPS, Detector, joint_risk  # noqa: E402
 
-RUN = re.compile(r"v5_(none|pa|pb|pc)_std_(.+)_dtu_scan(\d+)_v8")
+RUN = re.compile(r"v5_(none|pac|pa|pb|pc)_std_(.+)_dtu_scan(\d+)_v8")
 
 
 def load(pattern):
@@ -134,8 +134,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--folds", nargs="+", required=True, help="comma-separated scans per fold")
     ap.add_argument("--sets", nargs="+", default=["A", "AG", "AGP", "AGPD"])
-    ap.add_argument("--train_levels", nargs="+", default=["none", "pa", "pb", "pc"])
-    ap.add_argument("--test_levels", nargs="+", default=["none", "pa", "pb", "pc"])
+    ap.add_argument("--train_levels", nargs="+", default=["none", "pa", "pb", "pc", "pac"])
+    ap.add_argument("--test_levels", nargs="+", default=["none", "pa", "pb", "pc", "pac"])
     ap.add_argument("--tag", default="r0")
     ap.add_argument("--epochs", type=int, default=8)
     ap.add_argument("--baselines", action="store_true")

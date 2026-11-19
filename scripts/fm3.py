@@ -30,7 +30,7 @@ from frecon.gaussians import nearest_dist  # noqa: E402
 from frecon.render import get_rasterizer  # noqa: E402
 from frecon.train import TrainConfig, Trainer  # noqa: E402
 
-NAME = re.compile(r"(photo|v2|v3|v5)_(none|mild|strongng|strongs1|strongs2|strong|pa|pb|pc)(.*)_dtu_scan(\d+)_v(\d+)$")
+NAME = re.compile(r"(photo|v2|v3|v5)_(none|mild|strongng|strongs1|strongs2|strong|pac|pa|pb|pc)(.*)_dtu_scan(\d+)_v(\d+)$")
 
 
 def parse(name: str) -> dict:
