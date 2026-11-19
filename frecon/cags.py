@@ -338,6 +338,7 @@ def load_detector(path, dev):
     det.load_state_dict(ck["state"])
     det.eval()
     det.use_cmp = ck.get("use_cmp", True)
+    det.tau = ck.get("tau")          # calibration threshold on q (cags_train), None for old checkpoints
     return det
 
 
@@ -450,6 +451,8 @@ def tick(tr):
                 tr._det = load_detector(cfg.cags_model, F.device)
             lg, dh = tr._det(F)
             q = joint_risk(lg, dh, use_cmp=tr._det.use_cmp)
+            if getattr(tr._det, "tau", None):    # calibrated: q = tau maps to 0.5 (= tau_s), full strength at 2 tau
+                q = (0.5 * q / tr._det.tau).clamp(0, 1)
         else:
             raise ValueError(mode)
         b = float(getattr(cfg, "cags_ema", 0.5))

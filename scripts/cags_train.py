@@ -97,14 +97,34 @@ def train_one(D, rows, idx, dev, epochs=8, bs=16384, lr=2e-3, max_rows=4_000_000
 
 
 @torch.no_grad()
-def predict(det, F, dev, bs=262144):
+def predict(det, F, dev, bs=262144, use_cmp=True):
     lg, dh = [], []
     for i in range(0, len(F), bs):
         a, b = det(torch.from_numpy(F[i:i + bs]).to(dev).float())
         lg.append(a.cpu())
         dh.append(b.cpu())
     lg, dh = torch.cat(lg), torch.cat(dh)
-    return torch.sigmoid(lg).numpy(), dh.numpy(), joint_risk(lg, dh).numpy()
+    return torch.sigmoid(lg).numpy(), dh.numpy(), joint_risk(lg, dh, use_cmp=use_cmp).numpy()
+
+
+def calibrate(D, rows, det, dev, prec=0.8, use_cmp=True, n=1_000_000, seed=0):
+    """Lowest threshold tau on the risk q at which the flagged training Gaussians are off-surface (y_geo = 1) with
+    weighted precision >= prec, i.e. the largest recall at that precision. Falls back to the max-F1 threshold."""
+    rng = np.random.default_rng(seed)
+    rows = rows[D["y_geo"][rows] >= 0]
+    if len(rows) > n:
+        rows = rng.choice(rows, n, replace=False)
+    _, _, q = predict(det, D["F"][rows], dev, use_cmp=use_cmp)
+    y = D["y_geo"][rows] == 1
+    w = D["sw"][rows].astype(np.float64)
+    o = np.argsort(-q)
+    tp, fl = np.cumsum((w * y)[o]), np.cumsum(w[o])
+    pr, rc = tp / fl, tp / max(tp[-1], 1e-12)
+    ok = np.nonzero(pr >= prec)[0]
+    k = ok.max() if len(ok) else int(np.argmax(2 * pr * rc / np.maximum(pr + rc, 1e-12)))
+    tau = float(max(q[o][k], 1e-6))
+    info = dict(tau=tau, prec=float(pr[k]), recall_off=float(rc[k]), flag_rate=float(fl[k] / fl[-1]), fallback=not len(ok))
+    return tau, info
 
 
 def rule(F):
@@ -147,6 +167,8 @@ def main():
     ap.add_argument("--tag", default="r0")
     ap.add_argument("--epochs", type=int, default=8)
     ap.add_argument("--baselines", action="store_true")
+    ap.add_argument("--cal_prec", type=float, default=0.8, help="precision (off-surface) of the calibration threshold")
+    ap.add_argument("--calibrate_only", action="store_true", help="recalibrate existing <tag>_<set>_fold<f>.pt in place")
     a = ap.parse_args()
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     parts = [load(p) for p in a.logs]
@@ -163,10 +185,24 @@ def main():
             print(f"fold {fi}: no rows, skipped")
             continue
         for s in a.sets:
-            idx = feat_idx(s)
-            det = train_one(D, tr_rows, idx, dev, epochs=a.epochs, seed=fi)
-            torch.save({"idx": idx, "state": det.state_dict(), "hidden": 128, "depth": 3, "use_cmp": True,
-                        "set": s, "fold": fs, "train_levels": a.train_levels}, out / f"{a.tag}_{s}_fold{fi}.pt")
+            f = out / f"{a.tag}_{s}_fold{fi}.pt"
+            if a.calibrate_only:
+                ck = torch.load(f, map_location=dev, weights_only=False)
+                det = Detector(ck["idx"], ck.get("hidden", 128), ck.get("depth", 3)).to(dev)
+                det.load_state_dict(ck["state"])
+                det.eval()
+            else:
+                idx = feat_idx(s)
+                det = train_one(D, tr_rows, idx, dev, epochs=a.epochs, seed=fi)
+                ck = {"idx": idx, "state": det.state_dict(), "hidden": 128, "depth": 3, "use_cmp": True,
+                      "set": s, "fold": fs, "train_levels": a.train_levels}
+            tau, info = calibrate(D, tr_rows, det, dev, a.cal_prec, ck.get("use_cmp", True), seed=fi)
+            ck.update(tau=tau, cal=info)
+            torch.save(ck, f)
+            print(f"fold {fi} set {s}: tau {tau:.4f}, precision {info['prec']:.3f}, recall_off {info['recall_off']:.3f}, "
+                  f"flag rate {info['flag_rate']:.4f}" + (" (max-F1 fallback)" if info["fallback"] else ""), flush=True)
+            if a.calibrate_only:
+                continue
             for lv in a.test_levels + ["all"]:
                 rr = te_rows if lv == "all" else te_rows[D["level"][te_rows] == lv]
                 if len(rr) == 0:
@@ -185,6 +221,8 @@ def main():
                                ("max_share", F[:, names.index("max_share")]), ("front_frac", F[:, names.index("front_frac")])):
                     res.append(dict(scores(D, rr, sc, sc, None, bn), fold=fi, level=lv, tag=a.tag))
     df = pd.DataFrame(res)
+    if df.empty:          # --calibrate_only: metrics unchanged
+        return
     df.to_csv(out / f"{a.tag}_metrics.csv", index=False)
     cols = [c for c in ("auroc_geo", "ap_geo", "ap_geo_w", "ap_joint", "ap_joint_w", "spearman_delta") if c in df]
     print(df[df.level == "all"].groupby("model")[cols].mean().round(3).to_string())
