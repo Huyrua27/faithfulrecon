@@ -107,9 +107,10 @@ def predict(det, F, dev, bs=262144, use_cmp=True):
     return torch.sigmoid(lg).numpy(), dh.numpy(), joint_risk(lg, dh, use_cmp=use_cmp).numpy()
 
 
-def calibrate(D, rows, det, dev, prec=0.8, use_cmp=True, n=1_000_000, seed=0):
+def calibrate(D, rows, det, dev, prec=0.8, use_cmp=True, n=1_000_000, seed=0, rate=None):
     """Lowest threshold tau on the risk q at which the flagged training Gaussians are off-surface (y_geo = 1) with
-    weighted precision >= prec, i.e. the largest recall at that precision. Falls back to the max-F1 threshold."""
+    weighted precision >= prec, i.e. the largest recall at that precision. Falls back to the max-F1 threshold.
+    With rate: the threshold that flags that (weighted) fraction of the training Gaussians instead."""
     rng = np.random.default_rng(seed)
     rows = rows[D["y_geo"][rows] >= 0]
     if len(rows) > n:
@@ -120,7 +121,7 @@ def calibrate(D, rows, det, dev, prec=0.8, use_cmp=True, n=1_000_000, seed=0):
     o = np.argsort(-q)
     tp, fl = np.cumsum((w * y)[o]), np.cumsum(w[o])
     pr, rc = tp / fl, tp / max(tp[-1], 1e-12)
-    ok = np.nonzero(pr >= prec)[0]
+    ok = np.nonzero(pr >= prec)[0] if rate is None else np.array([min(np.searchsorted(fl / fl[-1], rate), len(q) - 1)])
     k = ok.max() if len(ok) else int(np.argmax(2 * pr * rc / np.maximum(pr + rc, 1e-12)))
     tau = float(max(q[o][k], 1e-6))
     info = dict(tau=tau, prec=float(pr[k]), recall_off=float(rc[k]), flag_rate=float(fl[k] / fl[-1]), fallback=not len(ok))
@@ -168,6 +169,7 @@ def main():
     ap.add_argument("--epochs", type=int, default=8)
     ap.add_argument("--baselines", action="store_true")
     ap.add_argument("--cal_prec", type=float, default=0.8, help="precision (off-surface) of the calibration threshold")
+    ap.add_argument("--cal_rate", type=float, default=None, help="calibrate to this flag rate instead of a precision")
     ap.add_argument("--calibrate_only", action="store_true", help="recalibrate existing <tag>_<set>_fold<f>.pt in place")
     a = ap.parse_args()
     dev = "cuda" if torch.cuda.is_available() else "cpu"
@@ -196,7 +198,7 @@ def main():
                 det = train_one(D, tr_rows, idx, dev, epochs=a.epochs, seed=fi)
                 ck = {"idx": idx, "state": det.state_dict(), "hidden": 128, "depth": 3, "use_cmp": True,
                       "set": s, "fold": fs, "train_levels": a.train_levels}
-            tau, info = calibrate(D, tr_rows, det, dev, a.cal_prec, ck.get("use_cmp", True), seed=fi)
+            tau, info = calibrate(D, tr_rows, det, dev, a.cal_prec, ck.get("use_cmp", True), seed=fi, rate=a.cal_rate)
             ck.update(tau=tau, cal=info)
             torch.save(ck, f)
             print(f"fold {fi} set {s}: tau {tau:.4f}, precision {info['prec']:.3f}, recall_off {info['recall_off']:.3f}, "
