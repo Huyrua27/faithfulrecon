@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FaithfulRecon · Floater comparison</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui,sans-serif; background:#131815; color:#eef3ed }
+  body { max-width: 1080px; margin:1.6rem auto; padding:0 1.2rem }
+  h1 { font-size:clamp(1.3rem,4vw,2rem); margin:.6rem 0 1rem }
+  .controls { display:flex; gap:.65rem 1rem; flex-wrap:wrap; align-items:center }
+  select, button { font:inherit; padding:.45rem .7rem; border:1px solid #54695a; border-radius:.4rem;
+    background:#202e25; color:inherit; cursor:pointer }
+  input[type=range] { width:min(16rem,65vw); accent-color:#a4ddaf }
+  output { font-variant-numeric:tabular-nums; min-width:5rem }
+  .images { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; margin-top:1rem }
+  figure { margin:0; border:1px solid #394c3e; border-radius:.5rem; overflow:hidden }
+  img { display:block; width:100%; background:white; image-rendering:auto; aspect-ratio:var(--frame-ratio, 1);
+    object-fit:contain; user-select:none; touch-action:pan-y; cursor:ew-resize }
+  figcaption { padding:.55rem .65rem; background:#202820; font-weight:600 }
+  p { color:#bfd0c4; font-size:.9rem }
+  @media(max-width:640px) {
+    .images {grid-template-columns:repeat(2,minmax(0,1fr))}
+    .images figure:last-child {max-width:15rem}
+  }
+</style>
+<main>
+  <h1>Floater comparison</h1>
+  <div class="controls">
+    <label for="mode">Hide</label>
+    <select id="mode"></select>
+    <label for="view">Camera</label>
+    <input id="view" type="range" min="0" value="0" step="1">
+    <output for="view" id="name" aria-live="polite"></output>
+    <button id="play" type="button" aria-pressed="false">Play orbit</button>
+  </div>
+  <div class="images">
+    <figure><img id="base" alt="Unmodified render" draggable="false"><figcaption>Unmodified</figcaption></figure>
+    <figure><img id="masked" alt="Render with selected Gaussians hidden" draggable="false">
+      <figcaption id="mask-label">Hidden</figcaption></figure>
+    <figure><img id="reference" alt="Reference image" draggable="false"><figcaption>Reference</figcaption></figure>
+  </div>
+  <p>Drag an image or scrub the camera slider to compare the same pose across pre-rendered views.</p>
+</main>
+<script>
+  const data = __VIEW_DATA__;
+  const labels = {
+    "top-k": "Classifier top K", random: "Matched random", single: "Highest score",
+    "small-group": "Small spatial group", "mid-score": "Mid-score Gaussian"
+  };
+  const mode = document.querySelector("#mode");
+  for (const key of data.modes) {
+    if (key !== "base") mode.add(new Option(labels[key], key));
+  }
+  mode.value = "top-k";
+  const camera = document.querySelector("#view");
+  const play = document.querySelector("#play");
+  const panels = ["base", "masked", "reference"].map(id => document.getElementById(id));
+  camera.max = data.views.length - 1;
+  let timer;
+  function show(index) {
+    index = (index % data.views.length + data.views.length) % data.views.length;
+    camera.value = index;
+    const suffix = String(index).padStart(2, "0");
+    [ "base", mode.value, "reference" ].forEach((name, i) => {
+      panels[i].src = "frames/" + name + "-" + suffix + ".png";
+    });
+    document.querySelector("#name").textContent = data.views[index];
+    document.querySelector("#mask-label").textContent = labels[mode.value];
+  }
+  function setPlayback(playing) {
+    clearInterval(timer);
+    timer = playing ? setInterval(() => show(Number(camera.value) + 1), 240) : undefined;
+    play.setAttribute("aria-pressed", String(playing));
+    play.textContent = playing ? "Pause orbit" : "Play orbit";
+  }
+  play.addEventListener("click", () => setPlayback(timer === undefined));
+  camera.addEventListener("input", () => {
+    setPlayback(false);
+    show(Number(camera.value));
+  });
+  mode.addEventListener("change", () => show(Number(camera.value)));
+  panels[0].addEventListener("load", () => {
+    document.documentElement.style.setProperty("--frame-ratio", panels[0].naturalWidth + "/" + panels[0].naturalHeight);
+  });
+  for (const panel of panels) {
+    let start;
+    panel.addEventListener("pointerdown", event => {
+      setPlayback(false);
+      start = { x: event.clientX, view: Number(camera.value) };
+      panel.setPointerCapture(event.pointerId);
+    });
+    panel.addEventListener("pointermove", event => {
+      if (start) show(start.view + Math.round((event.clientX - start.x) / 28));
+    });
+    panel.addEventListener("lostpointercapture", () => start = undefined);
+  }
+  show(0);
+</script>
+</html>
